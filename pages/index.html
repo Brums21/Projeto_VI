@@ -9,6 +9,25 @@
 
     <h1>Index</h1>
      
-
+    <script src="./../js/influx.js"></script>
+    <script>
+      const customQuery = "from(bucket: 'processed_cpms') \
+                        |> range(start: -24h) \
+                        |> filter(fn: (r) => r['_measurement'] == '5') \
+                        |> filter(fn: (r) => r['direction'] == 'inflow') \
+                        |> filter(fn: (r) => r['_field'] == 'ObjectID') \
+                        |> group(columns: ['_start']) \
+                        |> aggregateWindow(every: 1h, fn: count, createEmpty: true) \
+                        |> keep(columns:['_value', '_time'])";
+      get_data_from_db(customQuery)
+        .then((result) => {
+          console.log(result);
+          //work with result
+        })
+        .catch((error) => {
+          console.error('Error occurred:', error);
+        });
+    </script>
 </body>
+
 </html>
