@@ -8,7 +8,7 @@ const server = http.createServer( (req, res) => {
 
     let filePath = __dirname + '/pages/index.html';
 
-    //console.log(req.url);
+    console.log(req.url);
 
     switch(req.url) {
         case '/visualization1':
