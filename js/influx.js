@@ -1,6 +1,6 @@
 const Influxdb = require('influxdb-v2');
 
-const get_data_from_db = async (query_) => {
+export const get_data_from_db = async (query_) => {
   try {
     const influxdb = new Influxdb({
       host: '10.255.33.33', //might be necessary to add the port -> check later

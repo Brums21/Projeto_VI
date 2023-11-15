@@ -7,13 +7,14 @@ const port = 3000;
 
 const server = http.createServer((req, res) => {
 
-    let filePath = __dirname + '/pages/index.html';
-
-    console.log(req.url);
+    let filePath = '';
 
     switch(req.url) {
-        case '/visualization1':
-            filePath = __dirname + '/pages/visualization1.html';
+        case '/':
+            filePath = __dirname + '/pages/index.html';
+            break;
+        case '/js/influx.js':
+            filePath = __dirname + '/js/influx.js';
             break;
         default:
             filePath = __dirname + '/pages/index.html';
