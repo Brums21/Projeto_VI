@@ -1,11 +1,22 @@
-const http = require('http');
+const http = require('http'); 
 const fs = require('fs');
-const path = require('path');
+const path = require('path'); 
+
+// Requiring module
+const express = require('express');
+ 
+// Creating express object
+const app = express(); 
 
 const hostname = '127.0.0.1';
 const port = 3000;
 
-const server = http.createServer((req, res) => {
+// Function to serve all static files
+// inside public directory.
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
+
+const server = http.createServer( (req, res) => {
 
     let filePath = '';
 
@@ -20,6 +31,7 @@ const server = http.createServer((req, res) => {
             filePath = __dirname + '/pages/index.html';
             break;
     }
+    
 
     fs.readFile(filePath, (err, data) => {
         if (err) {
