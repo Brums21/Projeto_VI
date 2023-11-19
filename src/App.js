@@ -1,6 +1,6 @@
 import React from 'react';
-import Main from './components/d3_scripts';
-import InfluxComponent from './components/InfluxComponent';
+import Main from './components/d3_scripts.js';
+import InfluxComponent from './components/InfluxComponent.js';
 import mapa from './images/map.png';
 import './App.css';
 
@@ -9,24 +9,22 @@ function App() {
 
   return (
     <div className="App">
-    <Main />
-    <body>
-      <div class="left-section">
-      <img src={mapa} alt="Mapa Estações" />
-      </div>
-      <div class="middle-section">
-        <div class="graph-container" id="middleGraph">
-          
+    
+      <div className="row">
+        <div className="left-section">
+          <img src={mapa} alt="Mapa Estações" />
         </div>
-      </div>
-      <div class="right-section">
-        <div class="graph-container" id="rightGraph">
-          
+        <div className="middle-section">
+          <div className="graph-container" id="middleGraph">
+            <Main />
+          </div>
+        </div>
+        <div className ="right-section">
+          <div className="graph-container" id="rightGraph">
+          </div>
         </div>
       </div>
     <InfluxComponent query={dynamicQuery}/> 
-    <h1>Index</h1>
-    </body>
     </div>
   );
 }

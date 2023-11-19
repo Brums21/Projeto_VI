@@ -17,7 +17,7 @@ const InfluxComponent = ({ query }) => {
 
     fetchData();
   }, []);
-  console.log(JSON.stringify(queryResult, null, 2));
+  //console.log(JSON.stringify(queryResult, null, 2));
   return null;
 
 };

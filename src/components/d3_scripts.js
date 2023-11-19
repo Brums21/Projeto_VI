@@ -7,12 +7,6 @@ function Main() {
     const rightDataMiddle = [20, 55, 15, 75, 40, 30, 80];
     createGraph("middleGraph", leftDataMiddle, rightDataMiddle);
 
-    // Add more data and create additional graphs if needed
-    // const leftDataRight = [/* your data */];
-    // const rightDataRight = [/* your data */];
-    // createGraph("rightGraph", leftDataRight, rightDataRight);
-
-    // Ensure that the dependencies array is empty to run the effect only once
   }, []);
 
   function createGraph(containerId, left_data, right_data) {
