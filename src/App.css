@@ -11,7 +11,6 @@
   flex: 1;
   flex-direction:row;
   background-color: #f0f0f0;
-  display: flex;
   justify-content: center;
 }
 

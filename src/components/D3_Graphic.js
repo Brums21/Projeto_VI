@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 
-function Main() {
+function D3_Graphic({data}) {
   useEffect(() => {
     const leftDataMiddle = [10, 30, 45, 60, 20, 65, 35];
     const rightDataMiddle = [20, 55, 15, 75, 40, 30, 80];
-    createGraph("middleGraph", leftDataMiddle, rightDataMiddle);
+    createGraph(data, leftDataMiddle, rightDataMiddle);
 
   }, []);
 
@@ -66,4 +66,4 @@ function Main() {
   return null;
 }
 
-export default Main;
+export default D3_Graphic;

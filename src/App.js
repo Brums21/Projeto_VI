@@ -1,8 +1,10 @@
 import React from 'react';
-import Main from './components/d3_scripts.js';
+import MiddleGraphic from './components/MiddleGraphic.js'
+import RightGraphic from './components/RightGraphic.js';
 import InfluxComponent from './components/InfluxComponent.js';
 import mapa from './images/map.png';
 import './App.css';
+
 
 function App() {
   const dynamicQuery =  'from(bucket: "weather_recordings") |> range(start: -5m) |> filter(fn: (r) => r._measurement == "36713")';
@@ -15,12 +17,11 @@ function App() {
           <img src={mapa} alt="Mapa Estações" />
         </div>
         <div className="middle-section">
-          <div className="graph-container" id="middleGraph">
-            <Main />
-          </div>
+          <MiddleGraphic />
         </div>
         <div className ="right-section">
           <div className="graph-container" id="rightGraph">
+            <RightGraphic />
           </div>
         </div>
       </div>
