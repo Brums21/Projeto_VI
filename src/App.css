@@ -3,7 +3,9 @@
   padding: 0;
   display: flex;
   height: 100vh;
+  flex-direction: column; /* Change to column layout to stack items vertically */
 }
+
 
 .App {
   background-color: #f0f0f0;
@@ -11,12 +13,11 @@
 
 .row {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Align items at the top of the container */
   justify-content: center;
 }
 
-.left-section,
-.right-middle-section {
+.left-section {
   flex: 1 1 0;
   width: 0;
   background-color: #f0f0f0;
@@ -24,14 +25,23 @@
   margin-right: 5%;
 }
 
+.overlay {
+  flex: 2; /* Make the overlay take more vertical space */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
+  justify-content: flex-start; /* Align content at the top of the container */
+}
+
 .middle-right-section {
-  flex: 2;
+  flex: 1; /* Adjust the flex ratio as needed */
   display: flex;
   flex-direction: column;
 }
 
 .graph-container {
-  width: 400px;
+  width: 800px;
+  height: 400px;
   background-color: #f0f0f0;
   border-radius: 8px;
 }
