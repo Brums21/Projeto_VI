@@ -33,16 +33,23 @@ function MiddleGraphic() {
 
   return (
     <div>
-      <Select
-        value={options_vehicles.find(opt => opt.value === selectedOption)}
-        onChange={handleVehicleChange}
-        options={options_vehicles}
-      />
-      <Select
-        value={options_meteorology.find(opt => opt.value === selectedOption)}
-        onChange={handleMeteorologyChange}
-        options={options_meteorology}
-      />
+
+      <div style={{marginBottom:"5%"}}>
+        <Select
+          value={options_vehicles.find(opt => opt.value === selectedOption)}
+          onChange={handleVehicleChange}
+          options={options_vehicles}
+        />
+      </div>
+
+      <div style={{marginBottom:"5%"}}> 
+        <Select  
+          value={options_meteorology.find(opt => opt.value === selectedOption)}
+          onChange={handleMeteorologyChange}
+          options={options_meteorology}
+        />
+      </div>
+       
       <form>
         <label>
           <input

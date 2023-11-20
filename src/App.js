@@ -18,14 +18,15 @@ function App() {
         </div>
         <div className="middle-section">
           <MiddleGraphic />
-        </div>
+        </div> 
+       
         <div className ="right-section">
           <div className="graph-container" id="rightGraph">
-            <RightGraphic />
+             {/* <RightGraphic />*/}
+           
           </div>
-        </div>
-      </div>
-    <InfluxComponent query={dynamicQuery}/> 
+        </div> 
+      </div> 
     </div>
   );
 }

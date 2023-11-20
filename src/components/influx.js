@@ -1,6 +1,7 @@
 const Influxdb = require('influxdb-v2');
 
 async function queryInfluxDB(query) {
+  console.log(query)
   try {
     const influxdb = new Influxdb({
       protocol: 'http',

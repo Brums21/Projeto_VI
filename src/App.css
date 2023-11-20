@@ -12,6 +12,7 @@
   flex-direction:row;
   background-color: #f0f0f0;
   justify-content: center;
+  margin-right: 5%;;
 }
 
 .App .graph-container {
