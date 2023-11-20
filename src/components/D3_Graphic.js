@@ -94,10 +94,50 @@ function D3_Graphic({ data, station, meteorology, vehicle_type}) {
     
       // Select the existing SVG if it exists
       let svg = d3.select(`#${containerId} svg`);
-      
-      // If the SVG exists, remove its content before updating
+    
+      // If the SVG exists, update its content instead of removing
       if (!svg.empty()) {
-        svg.selectAll("*").remove();
+        // Update data and scales
+        const xScale = d3.scaleLinear()
+          .domain([0, leftData.length - 1])
+          .range([0, width]);
+    
+        const yScaleLeft = d3.scaleLinear()
+          .domain([0, d3.max(leftData, d => d["_value"])])
+          .range([height, 0 - (d3.max(rightData, d => d["_value"]))]);
+    
+        const yScaleRight = d3.scaleLinear()
+          .domain([0, d3.max(rightData, d => d["_value"])])
+          .range([height, 0]);
+    
+        const lineLeft = d3.line()
+          .x((d, i) => xScale(i))
+          .y(d => yScaleLeft(d["_value"]));
+    
+        const lineRight = d3.line()
+          .x((d, i) => xScale(i))
+          .y(d => yScaleRight(d["_value"]));
+    
+        // Update existing paths
+        svg.select(".line.blue")
+          .data([leftData])
+          .attr("d", lineLeft);
+    
+        svg.select(".line.red")
+          .data([rightData])
+          .attr("d", lineRight);
+    
+        // Update axes
+        svg.select(".axis-left")
+          .call(d3.axisLeft(yScaleLeft));
+    
+        svg.select(".axis-right")
+          .attr("transform", `translate(${width}, 0)`)
+          .call(d3.axisRight(yScaleRight));
+    
+        svg.select(".axis-bottom")
+          .attr("transform", `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
       } else {
         // If the SVG does not exist, create a new one
         svg = d3.select(`#${containerId}`)
@@ -106,52 +146,55 @@ function D3_Graphic({ data, station, meteorology, vehicle_type}) {
           .attr("height", "100%")
           .append("g")
           .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    
+        const xScale = d3.scaleLinear()
+          .domain([0, leftData.length - 1])
+          .range([0, width]);
+    
+        const yScaleLeft = d3.scaleLinear()
+          .domain([0, d3.max(leftData, d => d["_value"])])
+          .range([height, 0 - (d3.max(rightData, d => d["_value"]))]);
+    
+        const yScaleRight = d3.scaleLinear()
+          .domain([0, d3.max(rightData, d => d["_value"])])
+          .range([height, 0]);
+    
+        const lineLeft = d3.line()
+          .x((d, i) => xScale(i))
+          .y(d => yScaleLeft(d["_value"]));
+    
+        const lineRight = d3.line()
+          .x((d, i) => xScale(i))
+          .y(d => yScaleRight(d["_value"]));
+    
+        svg.append("path")
+          .data([leftData])
+          .attr("class", "line blue")
+          .attr("d", lineLeft)
+          .attr("fill", "none")
+          .attr("stroke", "blue");
+    
+        svg.append("path")
+          .data([rightData])
+          .attr("class", "line red")
+          .attr("d", lineRight)
+          .attr("fill", "none")
+          .attr("stroke", "red");
+    
+        svg.append("g")
+          .attr("class", "axis-left")
+          .call(d3.axisLeft(yScaleLeft));
+    
+        svg.append("g")
+          .attr("class", "axis-right")
+          .attr("transform", `translate(${width}, 0)`)
+          .call(d3.axisRight(yScaleRight));
+    
+        svg.append("g")
+          .attr("class", "axis-bottom")
+          .attr("transform", `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
       }
-    
-      const xScale = d3.scaleLinear()
-        .domain([0, leftData.length - 1])
-        .range([0, width]);
-    
-      const yScaleLeft = d3.scaleLinear()
-        .domain([0, d3.max(leftData, d => d["_value"])])
-        .range([height, 0 - (d3.max(rightData, d => d["_value"]))]);
-    
-      const yScaleRight = d3.scaleLinear()
-        .domain([0, d3.max(rightData, d => d["_value"])])
-        .range([height, 0]);
-    
-      const lineLeft = d3.line()
-        .x((d, i) => xScale(i))
-        .y(d => yScaleLeft(d["_value"]));
-    
-      const lineRight = d3.line()
-        .x((d, i) => xScale(i))
-        .y(d => yScaleRight(d["_value"]));
-    
-      svg.append("path")
-        .data([leftData])
-        .attr("class", "line")
-        .attr("d", lineLeft)
-        .attr("fill", "none")
-        .attr("stroke", "blue");
-    
-      svg.append("path")
-        .data([rightData])
-        .attr("class", "line")
-        .attr("d", lineRight)
-        .attr("fill", "none")
-        .attr("stroke", "red");
-    
-      svg.append("g")
-        .call(d3.axisLeft(yScaleLeft));
-    
-      svg.append("g")
-        .attr("transform", `translate(${width}, 0)`)
-        .call(d3.axisRight(yScaleRight));
-    
-      svg.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(xScale));
     }
     
 
