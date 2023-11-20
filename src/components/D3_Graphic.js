@@ -2,15 +2,21 @@ import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import queryInfluxDB from './influx.js'; // Replace with the actual path
 
-function D3_Graphic({ data, meteorology}) {
+function D3_Graphic({ data, station, meteorology, vehicle_type}) {
   const [queryResult1, setQueryResult1] = useState(null);
   const [queryResult2, setQueryResult2] = useState(null);
 
-  const dynamicQuery1 =
-    'import "experimental/aggregate" from(bucket: "processed_cpms") |> range(start: 2023-10-22, stop: 2023-11-19) |> filter(fn: (r) => r["_measurement"] == "5") |> filter(fn: (r) => r["_field"] == "totalCount") |> filter(fn: (r) => r["direction"] == "inflow") |> filter(fn: (r) => r["object_class"] == "2")  |> aggregateWindow(every: 1d, fn: sum, createEmpty: true)  |> yield(name: "mean")';
-
-  const dynamicQuery2 =
-    'from(bucket: "weather_recordings") |> range(start: 2023-10-22, stop: 2023-11-19) |> filter(fn: (r) => r["_measurement"] == "36713") |> filter(fn: (r) => r["_field"] == "temp_max") |> filter(fn: (r) => r["period"] == "Dados_60m") |> filter(fn: (r) => r["height"] == "10m") |> aggregateWindow(every: 1d, fn: mean, createEmpty: false) |> yield(name: "mean")';
+  console.log(station)
+  console.log(vehicle_type)
+  const dynamicQuery1 = //inflow
+    'import "experimental/aggregate" from(bucket: "processed_cpms") '+
+    '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+    '|> filter(fn: (r) => r["_measurement"] == "' + station + '") '+
+    '|> filter(fn: (r) => r["_field"] == "totalCount") '+
+    '|> filter(fn: (r) => r["direction"] == "inflow") '+
+    '|> filter(fn: (r) => r["object_class"] == "' + vehicle_type + '") '+
+    '|> aggregateWindow(every: 1d, fn: sum, createEmpty: true) '+
+    '|> yield(name: "mean")';
 
     const fetchData = async () => {
       try {
@@ -25,21 +31,52 @@ function D3_Graphic({ data, meteorology}) {
     };
   
     useEffect(() => {
-      fetchData();
-    }, [dynamicQuery1, dynamicQuery2]);
-  
-    useEffect(() => {
       if (queryResult1 && queryResult2) {
         updateGraph(data, queryResult1, queryResult2);
       }
     }, [queryResult1, queryResult2, data]);
   
     function getRightQuery() {
-      console.log(meteorology === "temp_avg")
-      if (meteorology !== "temp_avg") {
-        return 'from(bucket: "weather_recordings") |> range(start: 2023-10-22, stop: 2023-11-19) |> filter(fn: (r) => r["_measurement"] == "36713") |> filter(fn: (r) => r["_field"] == "temp_max") |> filter(fn: (r) => r["period"] == "Dados_60m") |> filter(fn: (r) => r["height"] == "10m") |> aggregateWindow(every: 1d, fn: mean, createEmpty: false) |> yield(name: "mean")';
+      //this function is not dependent on stations, types of vehicles, only time period!
+      console.log(meteorology)
+      if (meteorology === "temp_avg") {
+        return 'from(bucket: "weather_recordings") '+
+                '|> range(start: 2023-10-19, stop: 2023-11-19) '+
+                '|> filter(fn: (r) => r["_measurement"] == "36713") '+
+                '|> filter(fn: (r) => r["_field"] == "temp_avg") '+
+                '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
+                '|> filter(fn: (r) => r["height"] == "10m") '+
+                '|> aggregateWindow(every: 1d, fn: mean, createEmpty: false) '+
+                '|> yield(name: "mean")';
       }
-      return 'from(bucket: "weather_recordings") |> range(start: 2023-10-22, stop: 2023-11-19) |> filter(fn: (r) => r["_measurement"] == "36713")|> filter(fn: (r) => r["_field"] == "radiance") |> filter(fn: (r) => r["period"] == "Dados_10m") |> aggregateWindow(every: 1h, fn: mean, createEmpty: false) |> yield(name: "mean")';
+      if (meteorology === "radiance"){
+        return 'from(bucket: "weather_recordings") '+
+              '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+              '|> filter(fn: (r) => r["_measurement"] == "36713")'+
+              '|> filter(fn: (r) => r["_field"] == "radiance") '+
+              '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
+              '|> aggregateWindow(every: 1h, fn: mean, createEmpty: false) '+
+              '|> yield(name: "mean")';
+      }
+      if (meteorology === "precipitation"){
+        return 'from(bucket: "weather_recordings") '+
+              '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+              '|> filter(fn: (r) => r["_measurement"] == "36713")'+
+              '|> filter(fn: (r) => r["_field"] == "precepitation") '+
+              '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
+              '|> aggregateWindow(every: 1h, fn: mean, createEmpty: false) '+
+              '|> yield(name: "mean")';
+      }
+      if (meteorology === "humidity_avg"){
+        return 'from(bucket: "weather_recordings") '+
+              '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+              '|> filter(fn: (r) => r["_measurement"] == "36713")'+
+              '|> filter(fn: (r) => r["_field"] == "humidity_avg") '+
+              '|> filter(fn: (r) => r["height"] == "10m") '+
+              '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
+              '|> aggregateWindow(every: 1h, fn: mean, createEmpty: false) '+
+              '|> yield(name: "mean")';
+      }
     }
   
     function updateGraph(data, result1, result2) {
@@ -119,7 +156,7 @@ function D3_Graphic({ data, meteorology}) {
     
 
   const handleClick = () => {
-    fetchData(); // Trigger another query when the button is clicked
+    fetchData();
   };
 
   return (
