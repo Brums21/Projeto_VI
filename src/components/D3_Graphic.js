@@ -26,20 +26,16 @@ function D3_Graphic({ data }) {
       }
     };
 
-    fetchData(); // Trigger the data fetching when the component mounts or when dependencies change
+    fetchData();
   }, [dynamicQuery1, dynamicQuery2]);
 
   useEffect(() => {
-    // Trigger the graph update when both results are available
     if (queryResult1 && queryResult2) {
       updateGraph(data, queryResult1, queryResult2);
     }
   }, [queryResult1, queryResult2, data]);
 
   function updateGraph(data, result1, result2) {
-    // Extract leftData and rightData from the results
-    const leftDataMiddle = [10, 30, 45, 60, 20, 65, 35]; // Use your logic to extract data from result1
-    const rightDataMiddle = [20, 55, 15, 75, 40, 30, 80]; // Use your logic to extract data from result2
 
     console.log(result1, result2);
     createGraph(data, result1, result2);
@@ -51,7 +47,7 @@ function D3_Graphic({ data }) {
   
     const margin = { top: 20, right: 20, bottom: 30, left: 40 };
     const width = 380 - margin.left - margin.right;
-    const height = 150 - margin.top - margin.bottom;
+    const height = 160 - margin.top - margin.bottom;
   
     const svg = d3.select(`#${containerId}`)
       .append("svg")

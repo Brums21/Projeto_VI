@@ -3,6 +3,9 @@ import Select from 'react-select';
 import D3_Graphic from './D3_Graphic';
 
 function MiddleGraphic() {
+  const [selectedOptionVehicle, setSelectedOptionVehicle] = useState("Vehicle Type");
+  const [selectedOptionMeteorology, setSelectedOptionMeteorology] = useState("Meteorology");
+  const [selectedOptionTime, setSelectedOptionTime] = useState("Time Period");
   const [selectedOption, setSelectedOption] = useState("Vehicle Speed");
 
   const options_vehicles = [
@@ -18,14 +21,25 @@ function MiddleGraphic() {
     { value: 'radiance', label: 'Radiance' },
     { value: 'temp_avg', label: 'Temperature' },
   ];
+  
+  const options_time = [
+    { value: 'last_hour', label: 'Last Hour' },
+    { value: 'last_24h', label: 'Last 24 hours' },
+    { value: 'last_week', label: 'Last week' },
+    { value: 'last_month', label: 'Last month' },
+  ]
 
   const handleVehicleChange = (selected) => {
-    setSelectedOption(selected.value);
+    setSelectedOptionVehicle(selected.value);
   };
 
   const handleMeteorologyChange = (selected) => {
-    setSelectedOption(selected.value);
+    setSelectedOptionMeteorology(selected.value);
   };
+
+  const handleTimePeriodChange = (selected) => {
+    setSelectedOptionTime(selected.value)
+  }
 
   const onValueChange = (event) => {
     setSelectedOption(event.target.value);
@@ -34,23 +48,30 @@ function MiddleGraphic() {
   return (
     <div>
 
-      <div style={{marginBottom:"5%"}}>
+      <div style={{marginBottom:"5%"}}> Vehicle type: 
         <Select
-          value={options_vehicles.find(opt => opt.value === selectedOption)}
+          value={options_vehicles.find(opt => opt.value === selectedOptionVehicle)}
           onChange={handleVehicleChange}
           options={options_vehicles}
         />
       </div>
 
-      <div style={{marginBottom:"5%"}}> 
+      <div style={{marginBottom:"5%"}}> Meteorology data:
         <Select  
-          value={options_meteorology.find(opt => opt.value === selectedOption)}
+          value={options_meteorology.find(opt => opt.value === selectedOptionMeteorology)}
           onChange={handleMeteorologyChange}
           options={options_meteorology}
         />
       </div>
+      <div style={{marginBottom:"5%"}}> Time Period
+        <Select  
+          value={options_time.find(opt => opt.value === selectedOptionTime)}
+          onChange={handleTimePeriodChange}
+          options={options_time}
+        />
+      </div>
        
-      <form>
+      <form style={{marginBottom:"5%"}}>
         <label>
           <input
             type='radio'
@@ -73,9 +94,6 @@ function MiddleGraphic() {
         </label>
         <br />
       </form>
-      <div>
-        Selected option is : {selectedOption}
-      </div>
       <div className="graph-container" id="middleGraph">
         <D3_Graphic data="middleGraph" />
       </div>
