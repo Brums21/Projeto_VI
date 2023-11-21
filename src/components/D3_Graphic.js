@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import queryInfluxDB from './influx.js'; // Replace with the actual path
 
-function D3_Graphic({ data, station, meteorology, vehicle_type}) {
+function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
   const [queryResult1, setQueryResult1] = useState(null);
   const [queryResult2, setQueryResult2] = useState(null);
 
   console.log(station)
   console.log(vehicle_type)
+  console.log(date)
+  const start_date = date[0].toLocaleDateString('en-CA')
+  const end_date = date[1].toLocaleDateString('en-CA')
+  console.log(start_date)
+  console.log(end_date)
   const dynamicQuery1 = //inflow
     'import "experimental/aggregate" from(bucket: "processed_cpms") '+
-    '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+    '|> range(start: '+  start_date  +', stop:'+  end_date  +') '+
     '|> filter(fn: (r) => r["_measurement"] == "' + station + '") '+
     '|> filter(fn: (r) => r["_field"] == "totalCount") '+
     '|> filter(fn: (r) => r["direction"] == "inflow") '+
@@ -41,7 +46,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type}) {
       console.log(meteorology)
       if (meteorology === "temp_avg") {
         return 'from(bucket: "weather_recordings") '+
-                '|> range(start: 2023-10-19, stop: 2023-11-19) '+
+                '|> range(start: '+  start_date  +', stop:'+  end_date  +') '+
                 '|> filter(fn: (r) => r["_measurement"] == "36713") '+
                 '|> filter(fn: (r) => r["_field"] == "temp_avg") '+
                 '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
@@ -51,7 +56,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type}) {
       }
       if (meteorology === "radiance"){
         return 'from(bucket: "weather_recordings") '+
-              '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+              '|> range(start: '+  start_date  +', stop:'+  end_date  +') '+
               '|> filter(fn: (r) => r["_measurement"] == "36713")'+
               '|> filter(fn: (r) => r["_field"] == "radiance") '+
               '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
@@ -60,7 +65,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type}) {
       }
       if (meteorology === "precipitation"){
         return 'from(bucket: "weather_recordings") '+
-              '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+              '|> range(start: '+  start_date  +', stop:'+  end_date  +') '+
               '|> filter(fn: (r) => r["_measurement"] == "36713")'+
               '|> filter(fn: (r) => r["_field"] == "precepitation") '+
               '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
@@ -69,7 +74,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type}) {
       }
       if (meteorology === "humidity_avg"){
         return 'from(bucket: "weather_recordings") '+
-              '|> range(start: 2023-10-22, stop: 2023-11-19) '+
+              '|> range(start: '+  start_date  +', stop:'+  end_date  +') '+
               '|> filter(fn: (r) => r["_measurement"] == "36713")'+
               '|> filter(fn: (r) => r["_field"] == "humidity_avg") '+
               '|> filter(fn: (r) => r["height"] == "10m") '+

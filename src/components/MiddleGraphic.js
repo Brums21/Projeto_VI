@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import D3_Graphic from './D3_Graphic';
+import "rsuite/dist/rsuite.min.css";
+import DateRangePicker from 'rsuite/DateRangePicker';
+
 
 function MiddleGraphic({ station }) {
   const [selectedOptionVehicle, setSelectedOptionVehicle] = useState("3");
   const [selectedOptionMeteorology, setSelectedOptionMeteorology] = useState("temp_avg");
   const [selectedOptionTime, setSelectedOptionTime] = useState("last_hour");
   const [selectedOption, setSelectedOption] = useState("vehicle_speed");
+
+  const {allowedRange} = DateRangePicker;
+  const today = new Date();
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(today.getMonth() - 1);
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+  const [selectedDate, setSelectedDate] = useState([oneWeekAgo, today]);
 
   const options_vehicles = [
     { value: '2', label: 'Motorcycle' },
@@ -28,6 +39,10 @@ function MiddleGraphic({ station }) {
     { value: 'last_week', label: 'Last week' },
     { value: 'last_month', label: 'Last month' },
   ];
+
+  const handleDateChange = (value) => {
+    setSelectedDate(value);
+  };
 
   const handleVehicleChange = (selected) => {
     setSelectedOptionVehicle(selected.value);
@@ -61,11 +76,12 @@ function MiddleGraphic({ station }) {
           options={options_meteorology}
         />
       </div>
-      <div style={{ marginBottom: "5%" }}> Time Period
-        <Select
-          value={options_time.find(opt => opt.value === selectedOptionTime)}
-          onChange={handleTimePeriodChange}
-          options={options_time}
+      <div style={{ marginBottom: "5%" }}> 
+        <div>Time Period:</div>
+        <DateRangePicker
+          value={selectedDate}
+          onChange={handleDateChange}
+          disabledDate={allowedRange(oneMonthAgo, today)}
         />
       </div>
 
@@ -92,7 +108,7 @@ function MiddleGraphic({ station }) {
         </label>
         <br />
       </form>
-      <D3_Graphic data="middleGraph" station={station} meteorology={selectedOptionMeteorology} vehicle_type={selectedOptionVehicle} />
+      <D3_Graphic data="middleGraph" station={station} meteorology={selectedOptionMeteorology} vehicle_type={selectedOptionVehicle} date={selectedDate}/>
       <div className="graph-container" id="middleGraph">  
       </div>
     </div>
