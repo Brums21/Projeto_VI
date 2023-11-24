@@ -8,13 +8,14 @@ import DateRangePicker from 'rsuite/DateRangePicker';
 function MiddleGraphic({ station }) {
   const [selectedOptionVehicle, setSelectedOptionVehicle] = useState("3");
   const [selectedOptionMeteorology, setSelectedOptionMeteorology] = useState("temp_avg");
-  const [selectedOptionTime, setSelectedOptionTime] = useState("last_hour");
   const [selectedOption, setSelectedOption] = useState("vehicle_speed");
 
   const {allowedRange} = DateRangePicker;
   const today = new Date();
+
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(today.getMonth() - 1);
+
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
   const [selectedDate, setSelectedDate] = useState([oneWeekAgo, today]);
@@ -33,13 +34,6 @@ function MiddleGraphic({ station }) {
     { value: 'radiance', label: 'Radiance' },
   ];
 
-  const options_time = [
-    { value: 'last_hour', label: 'Last Hour' },
-    { value: 'last_24h', label: 'Last 24 hours' },
-    { value: 'last_week', label: 'Last week' },
-    { value: 'last_month', label: 'Last month' },
-  ];
-
   const handleDateChange = (value) => {
     setSelectedDate(value);
   };
@@ -50,10 +44,6 @@ function MiddleGraphic({ station }) {
 
   const handleMeteorologyChange = (selected) => {
     setSelectedOptionMeteorology(selected.value);
-  };
-
-  const handleTimePeriodChange = (selected) => {
-    setSelectedOptionTime(selected.value);
   };
 
   const onValueChange = (event) => {
@@ -81,7 +71,7 @@ function MiddleGraphic({ station }) {
         <DateRangePicker
           value={selectedDate}
           onChange={handleDateChange}
-          disabledDate={allowedRange(oneMonthAgo, today)}
+          shouldDisableDate={allowedRange(oneMonthAgo, today)}
         />
       </div>
 
