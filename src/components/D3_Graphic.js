@@ -37,6 +37,8 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
   
     useEffect(() => {
       if (queryResult1 && queryResult2) {
+        console.log(queryResult1)
+        console.log(queryResult2)
         updateGraph(data, queryResult1, queryResult2);
       }
     }, [queryResult1, queryResult2, data]);
@@ -60,7 +62,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
               '|> filter(fn: (r) => r["_measurement"] == "36713")'+
               '|> filter(fn: (r) => r["_field"] == "radiance") '+
               '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
-              '|> aggregateWindow(every: 1h, fn: mean, createEmpty: false) '+
+              '|> aggregateWindow(every: 1d, fn: mean, createEmpty: false) '+
               '|> yield(name: "mean")';
       }
       if (meteorology === "precipitation"){
@@ -69,7 +71,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
               '|> filter(fn: (r) => r["_measurement"] == "36713")'+
               '|> filter(fn: (r) => r["_field"] == "precepitation") '+
               '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
-              '|> aggregateWindow(every: 1h, fn: mean, createEmpty: false) '+
+              '|> aggregateWindow(every: 1d, fn: mean, createEmpty: false) '+
               '|> yield(name: "mean")';
       }
       if (meteorology === "humidity_avg"){
@@ -79,7 +81,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
               '|> filter(fn: (r) => r["_field"] == "humidity_avg") '+
               '|> filter(fn: (r) => r["height"] == "10m") '+
               '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
-              '|> aggregateWindow(every: 1h, fn: mean, createEmpty: false) '+
+              '|> aggregateWindow(every: 1d, fn: mean, createEmpty: false) '+
               '|> yield(name: "mean")';
       }
     }
@@ -93,26 +95,41 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
       leftData = leftData[0];
       rightData = rightData[0];
     
-      const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+      const margin = { top: 20, right: 50, bottom: 30, left: 50 };
       const width = 800 - margin.left - margin.right;
       const height = 250 - margin.top - margin.bottom;
     
       // Select the existing SVG if it exists
       let svg = d3.select(`#${containerId} svg`);
     
-      // If the SVG exists, update its content instead of removing
       if (!svg.empty()) {
-        // Update data and scales
+
+        let minYValueleft = Math.min(
+          d3.min(leftData, d => d["_value"])
+        );
+  
+        let minYValueright = Math.min(
+          d3.min(rightData, d => d["_value"])
+        );
+
+        let maxYValueleft = Math.min(
+          d3.max(leftData, d => d["_value"])
+        );
+  
+        let maxYValueright = Math.min(
+          d3.max(rightData, d => d["_value"])
+        );  
+
         const xScale = d3.scaleLinear()
           .domain([0, leftData.length - 1])
           .range([0, width]);
     
         const yScaleLeft = d3.scaleLinear()
-          .domain([0, d3.max(leftData, d => d["_value"])])
-          .range([height, 0 - (d3.max(rightData, d => d["_value"]))]);
+          .domain([minYValueleft - minYValueleft*0.1, maxYValueleft + maxYValueleft*0.1])
+          .range([height, 0]);
     
         const yScaleRight = d3.scaleLinear()
-          .domain([0, d3.max(rightData, d => d["_value"])])
+          .domain([minYValueright- minYValueright*0.1, maxYValueright + maxYValueright*0.1])
           .range([height, 0]);
     
         const lineLeft = d3.line()
@@ -143,6 +160,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
         svg.select(".axis-bottom")
           .attr("transform", `translate(0, ${height})`)
           .call(d3.axisBottom(xScale));
+
       } else {
         // If the SVG does not exist, create a new one
         svg = d3.select(`#${containerId}`)
@@ -150,18 +168,34 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date}) {
           .attr("width", "100%")
           .attr("height", "100%")
           .append("g")
-          .attr("transform", `translate(${margin.left}, ${margin.top})`);
+          .attr("transform", `translate(${margin.left}, ${margin.top})`)
     
+        let minYValueleft = Math.min(
+          d3.min(leftData, d => d["_value"])
+        );
+  
+        let minYValueright = Math.min(
+          d3.min(rightData, d => d["_value"])
+        );
+
+        let maxYValueleft = Math.min(
+          d3.max(leftData, d => d["_value"])
+        );
+  
+        let maxYValueright = Math.min(
+          d3.max(rightData, d => d["_value"])
+        );  
+
         const xScale = d3.scaleLinear()
           .domain([0, leftData.length - 1])
           .range([0, width]);
     
         const yScaleLeft = d3.scaleLinear()
-          .domain([0, d3.max(leftData, d => d["_value"])])
+          .domain([minYValueleft - minYValueleft*0.1, maxYValueleft + maxYValueleft*0.1])
           .range([height, 0 - (d3.max(rightData, d => d["_value"]))]);
     
         const yScaleRight = d3.scaleLinear()
-          .domain([0, d3.max(rightData, d => d["_value"])])
+          .domain([minYValueright - minYValueright*0.1, maxYValueright + maxYValueright*0.1])
           .range([height, 0]);
     
         const lineLeft = d3.line()
