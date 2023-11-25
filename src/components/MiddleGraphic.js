@@ -109,7 +109,7 @@ function MiddleGraphic({ station }) {
               checked={selectedOption === "speed_traffic"}
               onChange={onValueChange}
             />
-            Vehicle Road Inflow with Vehicle Speed
+            Vehicle Speed with Vehicle Road Inflow
           </label>
         </div>
       </form>
