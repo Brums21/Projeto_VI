@@ -124,7 +124,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     leftData = leftData[0];
     rightData = rightData[0];
   
-    const margin = { top: 20, right: 50, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 100, bottom: 30, left: 50 };
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
 
@@ -164,6 +164,71 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .x(d => xScale(d["_time"]))
       .y(d => yScaleRight(d["_value"]));
 
+    let texto = "";
+    if (meteorology === "temp_avg"){
+      texto = "Temperature (ºC)"
+    }
+    else if (meteorology === "radiance"){
+      texto = "Radiance (W/m2-sr)"
+    }
+    else if (meteorology === "precepitation"){
+      texto = "Precipitation (mm)"
+    }
+    else if (meteorology === "humidity_avg"){
+      texto = "Humidity (%)"
+    }
+
+    // subtitles
+    svg.append("line")
+      .attr("x1", width+50)
+      .attr("y1", 100)
+      .attr("x2", width+60) 
+      .attr("y2", 100)
+      .style("stroke", "blue")
+      .style("stroke-width", 1);
+    
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("x", width+65)
+      .attr("y", 100)
+      .attr("dy", ".25em")
+      .attr("font-size", "11px")
+      .text("Number of vehicles");
+
+    svg.append("line")
+      .attr("x1", width+50)
+      .attr("y1", 120)
+      .attr("x2", width+60) 
+      .attr("y2", 120)
+      .style("stroke", "red")
+      .style("stroke-width", 1);
+    
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("x", width+65)
+      .attr("y", 120)
+      .attr("dy", ".25em")
+      .attr("font-size", "11px")
+      .text(texto);
+
+    // legenda in axis
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("text-anchor", "end")
+      .attr("x", 70)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text("Number of vehicles");
+    
+    svg.append("text")
+      .attr("class", "axis-right")
+      .attr("x", width)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text(texto);
+    
+    // end subtitles
+
     svg.append("path")
       .data([leftData])
       .attr("class", "line blue")
@@ -182,52 +247,10 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
 
-    svg.append("text")
-      .attr("class", "axis-left")
-      .attr("text-anchor", "end")
-      .attr("x", 50)
-      .attr("y", -13)
-      .attr("dy", ".2em")
-      .text("Number of cars");
-
     svg.append("g")
       .attr("class", "axis-right")
       .attr("transform", `translate(${width}, 0)`)
       .call(d3.axisRight(yScaleRight));
-    
-    //verificar qual o tipo de dados
-    if (meteorology === "temp_avg"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("ºC");
-    }
-    else if (meteorology === "humidity_avg"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("%");
-    }
-    else if (meteorology === "precepitation"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("mm");
-    }
-    else if (meteorology === "radiance"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width-15)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("W/m2-sr");
-    }
 
     if (rightData.length>= 20) {
       svg.append("g")
@@ -252,7 +275,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
   //done and functional
   function createFirstGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
   
-    const margin = { top: 20, right: 50, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 100, bottom: 30, left: 50 };
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
 
@@ -373,45 +396,94 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
       
+    let texto = "";
+    if (meteorology === "temp_avg"){
+      texto = "Temperature (ºC)"
+    }
+    else if (meteorology === "radiance"){
+      texto = "Radiance (W/m2-sr)"
+    }
+    else if (meteorology === "precepitation"){
+      texto = "Precipitation (mm)"
+    }
+    else if (meteorology === "humidity_avg"){
+      texto = "Humidity (%)"
+    }
+
+    // boxplot legenda
+    svg.append("line")
+      .attr("x1", width+55)
+      .attr("y1", 105)
+      .attr("x2", width+55) 
+      .attr("y2", 95)
+      .style("stroke", "black")
+      .style("stroke-width", 1);
+    
+    svg.append("line")
+      .attr("x1", width+55)
+      .attr("y1", 55)
+      .attr("x2", width+55) 
+      .attr("y2", 65)
+      .style("stroke", "black")
+      .style("stroke-width", 1);
+
+    svg.append("rect")
+      .attr("x", width+50)
+      .attr("y", 65)
+      .attr("height", 30)
+      .attr("width", 10) 
+      .attr("stroke", "black")
+      .attr("fill", "#69b3a2");
+    
+    svg.append("line")
+      .attr("x1", width+60)
+      .attr("y1", 80)
+      .attr("x2", width+50) 
+      .attr("y2", 80)
+      .style("stroke", "black")
+      .style("stroke-width", 1);
+
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("x", width+68)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-size", "11px")
+      .text("Vehicle Speed");
+
+    //line legenda
+    svg.append("line")
+      .attr("x1", width+50)
+      .attr("y1", 120)
+      .attr("x2", width+60) 
+      .attr("y2", 120)
+      .style("stroke", "red")
+      .style("stroke-width", 1);
+
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("x", width+65)
+      .attr("y", 120)
+      .attr("dy", ".25em")
+      .attr("font-size", "11px")
+      .text(texto);
+    
+    // legenda in axis
     svg.append("text")
       .attr("class", "axis-left")  
       .attr("x", -30)
       .attr("y", -13)
       .attr("dy", ".2em")
-      .text("km/h");
+      .text("Vehicle speed (km/h)");
 
-    if (meteorology === "temp_avg"){
-      svg.append("text")
-        .attr("class", "axis-right")  
-        .attr("x", width)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("ºC");
-    }
-    else if (meteorology === "humidity_avg"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("%");
-    }
-    else if (meteorology === "precepitation"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("mm");
-    }
-    else if (meteorology === "radiance"){
-      svg.append("text")
-        .attr("class", "axis-right")
-        .attr("x", width-15)
-        .attr("y", -13)
-        .attr("dy", ".2em")
-        .text("W/m2-sr");
-    }
+    svg.append("text")
+      .attr("class", "axis-right")
+      .attr("x", width)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text(texto);
+    
+    // end subtitles
 
     if (meteorologicalData.length>= 20) {
       svg.append("g")
@@ -435,7 +507,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
   //done and functional
   function createThirdGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
-    const margin = { top: 20, right: 50, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 100, bottom: 30, left: 50 };
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
 
@@ -556,12 +628,71 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
     
+    // boxplot legenda
+    svg.append("line")
+      .attr("x1", width+55)
+      .attr("y1", 105)
+      .attr("x2", width+55) 
+      .attr("y2", 95)
+      .style("stroke", "black")
+      .style("stroke-width", 1);
+    
+    svg.append("line")
+      .attr("x1", width+55)
+      .attr("y1", 55)
+      .attr("x2", width+55) 
+      .attr("y2", 65)
+      .style("stroke", "black")
+      .style("stroke-width", 1);
+
+    svg.append("rect")
+      .attr("x", width+50)
+      .attr("y", 65)
+      .attr("height", 30)
+      .attr("width", 10) 
+      .attr("stroke", "black")
+      .attr("fill", "#69b3a2");
+    
+    svg.append("line")
+      .attr("x1", width+60)
+      .attr("y1", 80)
+      .attr("x2", width+50) 
+      .attr("y2", 80)
+      .style("stroke", "black")
+      .style("stroke-width", 1);
+
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("x", width+68)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-size", "11px")
+      .text("Vehicle Speed");
+
+    //line legenda
+    svg.append("line")
+      .attr("x1", width+50)
+      .attr("y1", 120)
+      .attr("x2", width+60) 
+      .attr("y2", 120)
+      .style("stroke", "red")
+      .style("stroke-width", 1);
+
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("x", width+65)
+      .attr("y", 120)
+      .attr("dy", ".25em")
+      .attr("font-size", "11px")
+      .text("Number of vehicles");
+    
+    // in axis legenda
     svg.append("text")
       .attr("class", "axis-left")  
       .attr("x", -30)
       .attr("y", -13)
       .attr("dy", ".2em")
-      .text("km/h");
+      .text("Vehicle speed (km/h)");
 
     svg.append("text")
       .attr("class", "axis-right")  
@@ -569,6 +700,9 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("y", -13)
       .attr("dy", ".2em")
       .text("Number of vehicles");
+    
+    // end subtitles
+    
 
     if (meteorologicalData.length>= 20) {
       svg.append("g")
@@ -596,6 +730,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
   return (
     <div>
+      Put title here!
     </div>
   );
 }
