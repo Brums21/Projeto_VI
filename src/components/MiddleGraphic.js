@@ -9,7 +9,6 @@ function MiddleGraphic({ station }) {
   const [selectedOptionVehicle, setSelectedOptionVehicle] = useState("3");
   const [selectedOptionMeteorology, setSelectedOptionMeteorology] = useState("temp_avg");
   const [selectedOption, setSelectedOption] = useState("vehicle_speed");
-
   const {allowedRange} = DateRangePicker;
   const today = new Date();
 
@@ -24,13 +23,13 @@ function MiddleGraphic({ station }) {
     { value: '2', label: 'Motorcycle' },
     { value: '3', label: 'Car' },
     { value: '5', label: 'LightTruck' },
-    { value: '6', label: 'HeavyTruck' },
+    { value: '6', label: 'HeavyTruck' }
   ];
 
   const options_meteorology = [
     { value: 'temp_avg', label: 'Temperature' },
     { value: 'humidity_avg', label: 'Humidity' },
-    { value: 'precipitation', label: 'Precipitation' },
+    { value: 'precepitation', label: 'Precepitation' },
     { value: 'radiance', label: 'Radiance' },
   ];
 
@@ -52,53 +51,69 @@ function MiddleGraphic({ station }) {
 
   return (
     <div>
-      <div style={{ marginBottom: "5%" }}> Vehicle type:
-        <Select
-          value={options_vehicles.find(opt => opt.value === selectedOptionVehicle)}
-          onChange={handleVehicleChange}
-          options={options_vehicles}
-        />
-      </div>
-      <div style={{ marginBottom: "5%" }}> Meteorology data:
-        <Select
-          value={options_meteorology.find(opt => opt.value === selectedOptionMeteorology)}
-          onChange={handleMeteorologyChange}
-          options={options_meteorology}
-        />
-      </div>
-      <div style={{ marginBottom: "5%" }}> 
-        <div>Time Period:</div>
-        <DateRangePicker
-          value={selectedDate}
-          onChange={handleDateChange}
-          shouldDisableDate={allowedRange(oneMonthAgo, today)}
-        />
-      </div>
-
-      <form style={{ marginBottom: "5%" }}>
-        <label style={{ marginRight: "5%" }}>
-          <input
-            type='radio'
-            name="graph_type"
-            value="Vehicle Speed"
-            checked={selectedOption === "vehicle_speed"}
-            onChange={onValueChange}
+      <div className="row">
+        <div className='item'>
+          <div>Time Period:</div>
+          <DateRangePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            shouldDisableDate={allowedRange(oneMonthAgo, today)}
           />
-          Vehicle Speed
-        </label>
-        <label>
-          <input
-            type='radio'
-            name="graph_type"
-            value="Vehicle Road Inflow"
-            checked={selectedOption === "road_inflow"}
-            onChange={onValueChange}
+        </div>
+        <div className="item"> Vehicle type:
+          <Select
+            value={options_vehicles.find(opt => opt.value === selectedOptionVehicle)}
+            onChange={handleVehicleChange}
+            options={options_vehicles}
           />
-          Vehicle Road Inflow
-        </label>
-        <br />
+        </div>
+        <div className="item"> Meteorology data:
+          <Select
+            value={options_meteorology.find(opt => opt.value === selectedOptionMeteorology)}
+            onChange={handleMeteorologyChange}
+            options={options_meteorology}
+          />
+        </div>
+      </div>
+      <form>
+        <div style={{ marginBottom: "2%" }}>
+          <label style={{ marginRight: "5%" }}>
+            <input
+              type='radio'
+              name="graph_type"
+              value="speed_meteorological"
+              checked={selectedOption === "speed_meteorological"}
+              onChange={onValueChange}
+            />
+            Vehicle Speed with Meteorological Data
+          </label>
+        </div>
+        <div style={{ marginBottom: "2%" }}>
+          <label style={{ marginRight: "5%" }}>
+            <input
+              type='radio'
+              name="graph_type"
+              value="inflow_meteorological"
+              checked={selectedOption === "inflow_meteorological"}
+              onChange={onValueChange}
+            />
+            Vehicle Road Inflow with Meteorological Data
+          </label>
+        </div>
+        <div style={{ marginBottom: "2%" }}>
+          <label style={{ marginRight: "5%" }}>
+            <input
+              type='radio'
+              name="graph_type"
+              value="speed_traffic"
+              checked={selectedOption === "speed_traffic"}
+              onChange={onValueChange}
+            />
+            Vehicle Road Inflow with Vehicle Speed
+          </label>
+        </div>
       </form>
-      <D3_Graphic data="middleGraph" station={station} meteorology={selectedOptionMeteorology} vehicle_type={selectedOptionVehicle} date={selectedDate}/>
+      <D3_Graphic data="middleGraph" station={station} meteorology={selectedOptionMeteorology} vehicle_type={selectedOptionVehicle} date={selectedDate} graph_type={selectedOption}/>
       <div className="graph-container" id="middleGraph">  
       </div>
     </div>

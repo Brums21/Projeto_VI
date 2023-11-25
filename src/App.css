@@ -11,10 +11,21 @@
   background-color: #f0f0f0;
 }
 
-.row {
+.App .row {
   display: flex;
-  align-items: flex-start; /* Align items at the top of the container */
   justify-content: center;
+}
+
+.App .station {
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.App .item {
+  margin-bottom: 5%;
+  margin-right: 10%;
+  width: 20%;
+
 }
 
 .left-section {

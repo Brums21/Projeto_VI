@@ -24,7 +24,7 @@ function App() {
           <img src={mapa} alt="Mapa Estações" />
         </div>
         <div className="overlay">
-        <div>
+        <div className="station">
           <div style={{ marginBottom: "5%" }}>
             Station:
             <Select
