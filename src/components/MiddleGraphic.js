@@ -46,6 +46,7 @@ function MiddleGraphic({ station }) {
   };
 
   const onValueChange = (event) => {
+    console.log(event.target.value)
     setSelectedOption(event.target.value);
   };
 
@@ -66,14 +67,16 @@ function MiddleGraphic({ station }) {
             onChange={handleVehicleChange}
             options={options_vehicles}
           />
-        </div>
-        <div className="item"> Meteorology data:
-          <Select
-            value={options_meteorology.find(opt => opt.value === selectedOptionMeteorology)}
-            onChange={handleMeteorologyChange}
-            options={options_meteorology}
-          />
-        </div>
+        </div> 
+        {selectedOption !== "speed_traffic"  && (
+          <div className="item"> Meteorology data:
+            <Select
+              value={options_meteorology.find(opt => opt.value === selectedOptionMeteorology)}
+              onChange={handleMeteorologyChange}
+              options={options_meteorology}
+            />
+          </div>
+        )}
       </div>
       <form>
         <div style={{ marginBottom: "2%" }}>
