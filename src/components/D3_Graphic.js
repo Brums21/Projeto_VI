@@ -119,7 +119,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       '|> yield(name: "' + fn +'")'
   }
 
-  //this one remains unchanged
+  //done and functional
   function createSecondGraph(containerId, leftData, rightData) {
     leftData = leftData[0];
     rightData = rightData[0];
@@ -182,10 +182,52 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
 
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("text-anchor", "end")
+      .attr("x", 50)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text("Number of cars");
+
     svg.append("g")
       .attr("class", "axis-right")
       .attr("transform", `translate(${width}, 0)`)
       .call(d3.axisRight(yScaleRight));
+    
+    //verificar qual o tipo de dados
+    if (meteorology === "temp_avg"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("ºC");
+    }
+    else if (meteorology === "humidity_avg"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("%");
+    }
+    else if (meteorology === "precepitation"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("mm");
+    }
+    else if (meteorology === "radiance"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width-15)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("W/m2-sr");
+    }
 
     if (rightData.length>= 20) {
       svg.append("g")
@@ -207,7 +249,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     
   }
 
-  //Doing this
+  //done and functional
   function createFirstGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
   
     const margin = { top: 20, right: 50, bottom: 30, left: 50 };
@@ -330,6 +372,46 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     svg.append("g")
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
+      
+    svg.append("text")
+      .attr("class", "axis-left")  
+      .attr("x", -30)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text("km/h");
+
+    if (meteorology === "temp_avg"){
+      svg.append("text")
+        .attr("class", "axis-right")  
+        .attr("x", width)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("ºC");
+    }
+    else if (meteorology === "humidity_avg"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("%");
+    }
+    else if (meteorology === "precepitation"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("mm");
+    }
+    else if (meteorology === "radiance"){
+      svg.append("text")
+        .attr("class", "axis-right")
+        .attr("x", width-15)
+        .attr("y", -13)
+        .attr("dy", ".2em")
+        .text("W/m2-sr");
+    }
 
     if (meteorologicalData.length>= 20) {
       svg.append("g")
@@ -351,7 +433,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
   }
 
-  //TODO
+  //done and functional
   function createThirdGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
     const margin = { top: 20, right: 50, bottom: 30, left: 50 };
     const width = 800 - margin.left - margin.right;
@@ -473,6 +555,20 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     svg.append("g")
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
+    
+    svg.append("text")
+      .attr("class", "axis-left")  
+      .attr("x", -30)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text("km/h");
+
+    svg.append("text")
+      .attr("class", "axis-right")  
+      .attr("x", width-50)
+      .attr("y", -13)
+      .attr("dy", ".2em")
+      .text("Number of vehicles");
 
     if (meteorologicalData.length>= 20) {
       svg.append("g")
@@ -495,7 +591,6 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
   }
   
   useEffect(() => {
-    console.log(1)
     fetchData();
   }, [station, meteorology, vehicle_type, date, graph_type]);
 
