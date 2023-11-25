@@ -23,7 +23,7 @@ function App() {
     const svg = image
       .append('svg')
       .attr('width', '35%')
-      .attr('height', '100%')
+      .attr('height', '695px')
       .style('position', 'absolute')
       .style('top', 0)
       .style('left', 0)

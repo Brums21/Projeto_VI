@@ -135,7 +135,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "100%")
+      .attr("height", "80%")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -311,7 +311,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "100%")
+      .attr("height", "80%")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -543,7 +543,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "100%")
+      .attr("height", "80%")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
