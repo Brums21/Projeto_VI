@@ -27,7 +27,7 @@ function App() {
       .style('position', 'absolute')
       .style('top', 0)
       .style('left', 0)
-      .style('z-index', 1); // Set z-index to ensure SVG is on top
+      .style('z-index', 1);
   
     const buttonCoordinates = [
       { x: 415, y: 182, station: "5" },
@@ -44,38 +44,36 @@ function App() {
         return `translate(${d.x},${d.y})`;
       })
       .on('click', function (event, d) {
-        // Handle button click 
         setSelectedStation(d.station);
   
-        // Add a click visual effect
         d3.select(this)
           .select('circle')
           .transition()
           .duration(10)
-          .style('fill', 'grey') // Change circle color on click
+          .style('fill', 'grey') 
           .transition()
           .delay(200)
-          .style('fill', 'black'); // Restore circle color after a delay
+          .style('fill', 'black'); 
       })
       .on('mouseover', function () {
-        d3.select(this).select('circle').attr('r', 35); // Increase circle size on hover
+        d3.select(this).select('circle').attr('r', 35);
       })
       .on('mouseout', function () {
-        d3.select(this).select('circle').attr('r', 30); // Restore circle size on mouseout
+        d3.select(this).select('circle').attr('r', 30);
       });
   
     buttons.append('circle')
-      .attr('r', 30) // radius
-      .style('fill', 'black'); // button color
+      .attr('r', 30)
+      .style('fill', 'black'); 
   
     buttons.append('text')
       .text(function (d) {
         return d.station;
       })
       .attr('text-anchor', 'middle')
-      .attr('dy', 5) // Adjust vertical position of the text
+      .attr('dy', 5) 
       .style('fill', 'white')
-      .style('pointer-events', 'none'); // Ensure text doesn't interfere with hover and click events
+      .style('pointer-events', 'none');
   
   }, []);
   

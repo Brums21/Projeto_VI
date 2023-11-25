@@ -494,14 +494,13 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     
   }
   
-  const handleClick = () => {
+  useEffect(() => {
     console.log(1)
     fetchData();
-  };
+  }, [station, meteorology, vehicle_type, date, graph_type]);
 
   return (
     <div>
-      <button style={{marginBottom:"2%"}} onClick={handleClick}>Submit</button>
     </div>
   );
 }
