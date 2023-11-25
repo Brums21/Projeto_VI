@@ -35,6 +35,8 @@ function App() {
       { x: 100, y: 656, station: "7" },
     ];
   
+    let lastClickedButton = null;
+  
     // Draw buttons
     const buttons = svg.selectAll('g')
       .data(buttonCoordinates)
@@ -46,14 +48,22 @@ function App() {
       .on('click', function (event, d) {
         setSelectedStation(d.station);
   
+        // Reset the style for the last clicked button (if any)
+        if (lastClickedButton) {
+          lastClickedButton
+            .select('circle')
+            .style('fill', 'black');
+        }
+  
+        // Apply the effect to the clicked button
         d3.select(this)
           .select('circle')
           .transition()
           .duration(10)
           .style('fill', 'grey') 
-          .transition()
-          .delay(200)
-          .style('fill', 'black'); 
+  
+        // Update the last clicked button reference
+        lastClickedButton = d3.select(this);
       })
       .on('mouseover', function () {
         d3.select(this).select('circle').attr('r', 35);
@@ -64,18 +74,19 @@ function App() {
   
     buttons.append('circle')
       .attr('r', 30)
-      .style('fill', 'black'); 
+      .style('fill', 'black');
   
     buttons.append('text')
       .text(function (d) {
         return d.station;
       })
       .attr('text-anchor', 'middle')
-      .attr('dy', 5) 
+      .attr('dy', 5)
       .style('fill', 'white')
       .style('pointer-events', 'none');
   
   }, []);
+  
   
   
   
