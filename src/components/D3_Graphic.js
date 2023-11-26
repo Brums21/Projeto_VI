@@ -10,8 +10,15 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
   const start_date = date[0].toLocaleDateString('en-CA')
   const end_date = date[1].toLocaleDateString('en-CA')
 
-  const fetchData = async () => {
+  const start_date_ = new Date(date[0]);
+  const end_date_ = new Date(date[1]);
 
+  const fetchData = async () => { 
+    day_or_hour = "1d"
+    if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) < 3){
+      day_or_hour = "1h"
+    }
+    console.log((start_date_ -  end_date_ ) / (1000 * 60 * 60 * 24))
     try {
       //first graph
       if (graph_type === "speed_meteorological"){
@@ -59,7 +66,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
               '|> filter(fn: (r) => r["_field"] == "'+  meteorology  +'") '+
               '|> filter(fn: (r) => r["period"] == "Dados_10m") '+
               '|> filter(fn: (r) => r["height"] == "10m") '+
-              '|> aggregateWindow(every: 1d, fn: mean, createEmpty: false) '+
+              '|> aggregateWindow(every: ' + day_or_hour + ', fn: mean, createEmpty: false) '+
               '|> yield(name: "mean")';
     }
     else{
@@ -68,14 +75,14 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       '|> filter(fn: (r) => r["_measurement"] == "36713") '+
       '|> filter(fn: (r) => r["_field"] == "'+  meteorology  +'") '+
       '|> filter(fn: (r) => r["period"] == "Dados_10m") ' +
-      '|> aggregateWindow(every: 1d, fn: mean, createEmpty: false) '+
+      '|> aggregateWindow(every: ' + day_or_hour + ', fn: mean, createEmpty: false) '+
       '|> yield(name: "mean")';
     }
   
   }
 
   //done and functional
-  function cpms(field, fn){ //field -  totalCount, average_speed, maximum_speed, minimum_speed; fn - min, max, mean
+  function cpms(field, fn){ //field -  totalCount, average_speed, maximum_speed, minimum_speed; fn - min, max, mean 
     return 'from(bucket: "processed_cpms")' +
       '|> range(start: '+  start_date  +', stop: '+  end_date  +')'+
       '|> filter(fn: (r) => r["_measurement"] == "' + station + '")'+
@@ -102,7 +109,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "80%")
+      .attr("height", "100%")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -218,12 +225,12 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-right")
       .attr("transform", `translate(${width}, 0)`)
       .call(d3.axisRight(yScaleRight));
-
-    if (rightData.length>= 20) {
+    console.log(day_or_hour)
+    if (day_or_hour === "1h") {
       svg.append("g")
         .attr("class", "axis-bottom")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)))
+        .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)))
         .selectAll("text")  
           .style("text-anchor", "end")
           .attr("dx", "-.8em")
@@ -236,8 +243,8 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
-    
   }
+
 
   //done and functional
   function createFirstGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
@@ -269,14 +276,14 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     });
 
     const timeExtent = d3.extent(meteorologicalData, d => d["_time"]);
-    const timePadding = 24*60*60*500; 
+    const timePadding = day_or_hour === "1h" ? 60*60*1000 : 24*60*60*1000; // Change time padding based on day_or_hour
     const startTime = new Date(timeExtent[0].getTime() - timePadding);
     const endTime = new Date(timeExtent[1].getTime() + timePadding);
 
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "80%")
+      .attr("height", "100%")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -312,7 +319,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "line blue")
       .attr("d", lineLeft)
       .attr("fill", "none")
-      .attr("stroke", "blue");    //TODO: check why this isnt working
+      .attr("stroke", "blue");
 
     svg.selectAll("verticalLines")
       .data(boxplotData)
@@ -450,11 +457,11 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     
     // end subtitles
 
-    if (meteorologicalData.length>= 20) {
+    if (day_or_hour === "1h") {
       svg.append("g")
         .attr("class", "axis-bottom")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)))
+        .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)))
         .selectAll("text")  
           .style("text-anchor", "end")
           .attr("dx", "-.8em")
@@ -467,11 +474,12 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
+}
 
-  }
 
   //done and functional
   function createThirdGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
+  
     const margin = { top: 50, right: 100, bottom: 30, left: 50 };
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
@@ -499,14 +507,14 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     });
 
     const timeExtent = d3.extent(meteorologicalData, d => d["_time"]);
-    const timePadding = 24*60*60*500; 
+    const timePadding = day_or_hour === "1h" ? 60*60*1000 : 24*60*60*1000; // Change time padding based on day_or_hour
     const startTime = new Date(timeExtent[0].getTime() - timePadding);
     const endTime = new Date(timeExtent[1].getTime() + timePadding);
 
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "80%")
+      .attr("height", "100%")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -542,7 +550,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "line blue")
       .attr("d", lineLeft)
       .attr("fill", "none")
-      .attr("stroke", "blue");    //TODO: check why this isnt working
+      .attr("stroke", "blue");
 
     svg.selectAll("verticalLines")
       .data(boxplotData)
@@ -665,13 +673,12 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .text("Number of vehicles");
     
     // end subtitles
-    
 
-    if (meteorologicalData.length>= 20) {
+    if (day_or_hour === "1h") {
       svg.append("g")
         .attr("class", "axis-bottom")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)))
+        .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)))
         .selectAll("text")  
           .style("text-anchor", "end")
           .attr("dx", "-.8em")
@@ -684,8 +691,8 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
-    
-  }
+}
+
   
   useEffect(() => {
     console.log(title);
