@@ -15,7 +15,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
   const fetchData = async () => { 
     day_or_hour = "1d"
-    if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) < 3){
+    if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) < 2){
       day_or_hour = "1h"
     }
     console.log((start_date_ -  end_date_ ) / (1000 * 60 * 60 * 24))
