@@ -3,12 +3,7 @@ import * as d3 from 'd3';
 import queryInfluxDB from './influx.js'; // Replace with the actual path
 
 function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type}) {
-  const [queryResult1, setQueryResult1] = useState(null);
-  const [queryResult2, setQueryResult2] = useState(null);
-  const [queryResult3, setQueryResult3] = useState(null);
-  const [queryResult4, setQueryResult4] = useState(null);
-  const [queryResult5, setQueryResult5] = useState(null);
-  const [queryResult6, setQueryResult6] = useState(null);
+  const [title, setTitle] = useState(null);
 
   let day_or_hour = "1d"
 
@@ -21,58 +16,37 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
   }
 
   const fetchData = async () => {
+
     try {
       //first graph
       if (graph_type === "speed_meteorological"){
-        console.log(2)
-        const result1 = await queryInfluxDB(getMeteorologicalQuery());
-        setQueryResult1(result1);
+        setTitle("Relation between meteorological data and vehicle speed")
 
+        const result1 = await queryInfluxDB(getMeteorologicalQuery())
         const result2 = await queryInfluxDB(cpms("average_speed", "mean"));  //avg speed
-        setQueryResult2(result2);
-
         const result3 = await queryInfluxDB(cpms("average_speed", "max"));  //maxAvgSpeed
-        setQueryResult3(result3);
-
         const result4 = await queryInfluxDB(cpms("average_speed", "min"));  //minAvgSpeed
-        setQueryResult4(result4);
-
         const result5 = await queryInfluxDB(cpms("maximum_speed", "max"));  //maxSpeed
-        setQueryResult5(result5);
-
         const result6 = await queryInfluxDB(cpms("minimum_speed", "min"));  //minSpeed
-        setQueryResult6(result6);
 
         createFirstGraph(data, result1, result2, result3, result4, result5, result6);
       }
       else if (graph_type === "inflow_meteorological"){ //DONE
+        setTitle("Relation between meteorological data and vehicle inflow")
         const result1 = await queryInfluxDB(getMeteorologicalQuery());
-        setQueryResult1(result1);
-
         const result2 = await queryInfluxDB(cpms("totalCount", "count"));
-        setQueryResult2(result2);
 
         createSecondGraph(data, result2, result1);
       }
       else if (graph_type === "speed_traffic"){
+        setTitle("Relation between vehicle speed and vehicle inflow")
+
         const result1 = await queryInfluxDB(cpms("totalCount", "count"));
-        setQueryResult1(result1);
-
         const result2 = await queryInfluxDB(cpms("average_speed", "mean"));  //avg speed
-        setQueryResult2(result2);
-
         const result3 = await queryInfluxDB(cpms("average_speed", "max"));  //maxAvgSpeed
-        setQueryResult3(result3);
-
         const result4 = await queryInfluxDB(cpms("average_speed", "min"));  //minAvgSpeed
-        setQueryResult4(result4);
-
         const result5 = await queryInfluxDB(cpms("maximum_speed", "max"));  //maxSpeed
-        setQueryResult5(result5);
-
         const result6 = await queryInfluxDB(cpms("minimum_speed", "min"));  //minSpeed
-        setQueryResult6(result6);
-
         createThirdGraph(data, result1, result2, result3, result4, result5, result6);
       }
     } catch (error) {
@@ -80,11 +54,9 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     }
   };
 
-
   //done and functional
   function getMeteorologicalQuery() {
     //this function is not dependent on stations, types of vehicles, only time period!
-    console.log(meteorology)
     if (meteorology === "temp_avg" || meteorology === "humidity_avg") {
       return 'from(bucket: "weather_recordings") '+
               '|> range(start: '+  start_date  +', stop:'+  end_date  +') '+
@@ -305,8 +277,6 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     const timePadding = 24*60*60*500; 
     const startTime = new Date(timeExtent[0].getTime() - timePadding);
     const endTime = new Date(timeExtent[1].getTime() + timePadding);
-
-    console.log("boxplot data", boxplotData);
 
     svg = d3.select(`#${containerId}`)
       .append("svg")
@@ -538,8 +508,6 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     const startTime = new Date(timeExtent[0].getTime() - timePadding);
     const endTime = new Date(timeExtent[1].getTime() + timePadding);
 
-    console.log("boxplot data", boxplotData);
-
     svg = d3.select(`#${containerId}`)
       .append("svg")
       .attr("width", "100%")
@@ -725,12 +693,13 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
   }
   
   useEffect(() => {
+    console.log(title);
     fetchData();
   }, [station, meteorology, vehicle_type, date, graph_type]);
 
   return (
     <div>
-      Put title here!
+      <h4 className='titulo'>{title}</h4>
     </div>
   );
 }

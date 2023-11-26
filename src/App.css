@@ -6,8 +6,13 @@
   flex-direction: column; 
   
 }
+
 body{
   background-color: #f0f0f0
+}
+
+.App .titulo{
+  margin-left: 10%;
 }
 .App {
   background-color: #f0f0f0;
