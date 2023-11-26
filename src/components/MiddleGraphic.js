@@ -8,7 +8,7 @@ import DateRangePicker from 'rsuite/DateRangePicker';
 function MiddleGraphic({ station }) {
   const [selectedOptionVehicle, setSelectedOptionVehicle] = useState("3");
   const [selectedOptionMeteorology, setSelectedOptionMeteorology] = useState("temp_avg");
-  const [selectedOption, setSelectedOption] = useState("vehicle_speed");
+  const [selectedOption, setSelectedOption] = useState("speed_meteorological");
   const {allowedRange} = DateRangePicker;
   const today = new Date();
 
@@ -118,6 +118,11 @@ function MiddleGraphic({ station }) {
       </form>
       <D3_Graphic data="middleGraph" station={station} meteorology={selectedOptionMeteorology} vehicle_type={selectedOptionVehicle} date={selectedDate} graph_type={selectedOption}/>
       <div className="graph-container" id="middleGraph">  
+      </div>
+      <div>
+        <h6>Notes:</h6>
+        In this Information Visualization project we present the relation of data
+        //TODO: acabar de escrever este texto a explicar as coisas
       </div>
     </div>
   );

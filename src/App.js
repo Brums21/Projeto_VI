@@ -1,28 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import MiddleGraphic from './components/MiddleGraphic.js';
-import Select from 'react-select';
-import mapa from './images/map2.png';
 import './App.css';
 import * as d3 from 'd3'; 
 
 function App() {
   const [selectedStation, setSelectedStation] = useState("5"); 
   const mapRef = React.createRef();
-  const options_stations = [
-    { value: '5', label: '5' },
-    { value: '6', label: '6' },
-    { value: '7', label: '7' },
-  ];
-
-  const handleStationChange = (selected) => {
-    setSelectedStation(selected.value);
-  };
 
   useEffect(() => {
     const image = d3.select(mapRef.current);
     const svg = image
       .append('svg')
-      .attr('width', '35%')
+      .attr('width', '471px')
       .attr('height', '695px')
       .style('position', 'absolute')
       .style('top', 0)
@@ -34,7 +23,7 @@ function App() {
       { x: 148, y: 160, station: "6" },
       { x: 100, y: 656, station: "7" },
     ];
-  
+
     let lastClickedButton = null;
   
     const buttons = svg.selectAll('g')
@@ -57,7 +46,7 @@ function App() {
           .select('circle')
           .transition()
           .duration(10)
-          .style('fill', 'grey') 
+          .style('fill', 'green') 
   
         lastClickedButton = d3.select(this);
       })
@@ -80,7 +69,9 @@ function App() {
       .attr('dy', 5)
       .style('fill', 'white')
       .style('pointer-events', 'none');
-  
+
+    lastClickedButton = buttons.filter(d => d.station === "5");
+    lastClickedButton.select('circle').style('fill', 'green');
   }, []);
   
   return (

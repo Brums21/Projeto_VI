@@ -10,11 +10,6 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
   const start_date = date[0].toLocaleDateString('en-CA')
   const end_date = date[1].toLocaleDateString('en-CA')
 
-  const numberOfDays = Math.round((date[1] - date[0]) / (24 * 60 * 60 * 1000));
-  if (numberOfDays<=2){
-    day_or_hour = "1h"  //TODO: not functional yet 
-  }
-
   const fetchData = async () => {
 
     try {
