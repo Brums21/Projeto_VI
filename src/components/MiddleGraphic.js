@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import D3_Graphic from './D3_Graphic';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 import "rsuite/dist/rsuite.min.css";
 import DateRangePicker from 'rsuite/DateRangePicker';
 
@@ -45,9 +47,8 @@ function MiddleGraphic({ station }) {
     setSelectedOptionMeteorology(selected.value);
   };
 
-  const onValueChange = (event) => {
-    console.log(event.target.value)
-    setSelectedOption(event.target.value);
+  const onValueChange = (selected) => {
+    setSelectedOption(selected);
   };
 
   return (
@@ -78,44 +79,11 @@ function MiddleGraphic({ station }) {
           </div>
         )}
       </div>
-      <form>
-        <div style={{ marginBottom: "2%" }}>
-          <label style={{ marginRight: "5%" }}>
-            <input
-              type='radio'
-              name="graph_type"
-              value="speed_meteorological"
-              checked={selectedOption === "speed_meteorological"}
-              onChange={onValueChange}
-            />
-            Vehicle Speed with Meteorological Data
-          </label>
-        </div>
-        <div style={{ marginBottom: "2%" }}>
-          <label style={{ marginRight: "5%" }}>
-            <input
-              type='radio'
-              name="graph_type"
-              value="inflow_meteorological"
-              checked={selectedOption === "inflow_meteorological"}
-              onChange={onValueChange}
-            />
-            Vehicle Road Inflow with Meteorological Data
-          </label>
-        </div>
-        <div style={{ marginBottom: "2%" }}>
-          <label style={{ marginRight: "5%" }}>
-            <input
-              type='radio'
-              name="graph_type"
-              value="speed_traffic"
-              checked={selectedOption === "speed_traffic"}
-              onChange={onValueChange}
-            />
-            Vehicle Speed with Vehicle Road Inflow
-          </label>
-        </div>
-      </form>
+      <Tabs defaultActiveKey="profile" activeKey={selectedOption} onSelect={onValueChange} id="fill-tab-example" className="mb-3" fill>
+        <Tab eventKey="speed_meteorological" title="Vehicle Speed with Meteorological Data"></Tab>
+        <Tab eventKey="inflow_meteorological" title="Vehicle Road Inflow with Meteorological Data"></Tab>
+        <Tab eventKey="speed_traffic" title="Vehicle Speed with Vehicle Road Inflow"></Tab>
+      </Tabs>
       <D3_Graphic data="middleGraph" station={station} meteorology={selectedOptionMeteorology} vehicle_type={selectedOptionVehicle} date={selectedDate} graph_type={selectedOption}/>
       <div className="graph-container" id="middleGraph">  
       </div>

@@ -6,6 +6,24 @@
   flex-direction: column; 
 }
 
+.App .nav-link {
+  color: #30a825; /* Change to your desired text color */
+}
+
+/* Optional: Hover styles for unselected tabs */
+.App .nav-link:hover {
+  color: rgb(15, 106, 70) /* Change to your desired hover text color */
+}
+
+.App .tooltip {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
 body{
   background-color: #f0f0f0
 }
@@ -20,15 +38,6 @@ body{
 .App .row {
   display: flex;
   justify-content: center;
-}
-
-.App .map {
-  background-image:url('images/map2.png');
-  height: 200%; 
-  width: 100%; 
-  max-width: 471px;
-  max-height: 695px;
-  min-height: 695px;
 }
 
 .App .item {
@@ -62,7 +71,7 @@ body{
 
 .graph-container {
   min-width: 900px; 
-  height: 70%;
+  height: 280px;
   background-color: #f0f0f0;
 }
 

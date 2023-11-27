@@ -5,7 +5,7 @@ import queryInfluxDB from './influx.js'; // Replace with the actual path
 function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type}) {
   const [title, setTitle] = useState(null);
 
-  let day_or_hour = "1d"
+  let day_or_hour = "1d";
 
   const start_date = date[0].toLocaleDateString('en-CA')
   const end_date = date[1].toLocaleDateString('en-CA')
@@ -15,8 +15,11 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
   const fetchData = async () => { 
     day_or_hour = "1d"
-    if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) < 3){
+    if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) < 2){
       day_or_hour = "1h"
+    }
+    else if ((end_date_- start_date_) / (1000 * 60 * 60 * 24) <= 4){
+      day_or_hour = "3h"
     }
     console.log((start_date_ -  end_date_ ) / (1000 * 60 * 60 * 24))
     try {
@@ -98,7 +101,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     leftData = leftData[0];
     rightData = rightData[0];
   
-    const margin = { top: 50, right: 100, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 100, bottom: 30, left: 80};
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
 
@@ -154,32 +157,32 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
     // subtitles
     svg.append("line")
-      .attr("x1", width+50)
+      .attr("x1", width+80)
       .attr("y1", 100)
-      .attr("x2", width+60) 
+      .attr("x2", width+90) 
       .attr("y2", 100)
       .style("stroke", "blue")
       .style("stroke-width", 1);
     
     svg.append("text")
       .attr("class", "axis-left")
-      .attr("x", width+65)
+      .attr("x", width+95)
       .attr("y", 100)
       .attr("dy", ".25em")
       .attr("font-size", "11px")
       .text("Number of vehicles");
 
     svg.append("line")
-      .attr("x1", width+50)
+      .attr("x1", width+80)
       .attr("y1", 120)
-      .attr("x2", width+60) 
+      .attr("x2", width+90) 
       .attr("y2", 120)
       .style("stroke", "red")
       .style("stroke-width", 1);
     
     svg.append("text")
       .attr("class", "axis-left")
-      .attr("x", width+65)
+      .attr("x", width+95)
       .attr("y", 120)
       .attr("dy", ".25em")
       .attr("font-size", "11px")
@@ -188,34 +191,54 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     // legenda in axis
     svg.append("text")
       .attr("class", "axis-left")
+      .attr("transform", "rotate(-90)" )
       .attr("text-anchor", "end")
-      .attr("x", 70)
-      .attr("y", -13)
+      .attr("x", -10)
+      .attr("y", -60)
       .attr("dy", ".2em")
       .text("Number of vehicles");
     
     svg.append("text")
       .attr("class", "axis-right")
-      .attr("x", width)
-      .attr("y", -13)
+      .attr("transform", "rotate(90)" )
+      .attr("x", 20)
+      .attr("y", -width-50)
       .attr("dy", ".2em")
       .text(texto);
     
     // end subtitles
 
-    svg.append("path")
-      .data([leftData])
-      .attr("class", "line blue")
-      .attr("d", lineLeft)
-      .attr("fill", "none")
-      .attr("stroke", "blue");
+  svg.append("path")
+    .data([leftData])
+    .attr("class", "line blue")
+    .attr("d", lineLeft)
+    .attr("fill", "none")
+    .attr("stroke", "blue");
 
-    svg.append("path")
-      .data([rightData])
-      .attr("class", "line red")
-      .attr("d", lineRight)
-      .attr("fill", "none")
-      .attr("stroke", "red");
+  svg.selectAll(".point-left")
+    .data(leftData)
+    .enter().append("circle")
+    .attr("class", "point-left")
+    .attr("cx", d => xScale(d["_time"]))
+    .attr("cy", d => yScaleLeft(d["_value"]))
+    .attr("r", 2)  
+    .style("fill", "blue");
+
+  svg.append("path")
+    .data([rightData])
+    .attr("class", "line red")
+    .attr("d", lineRight)
+    .attr("fill", "none")
+    .attr("stroke", "red");
+
+  svg.selectAll(".point-right")
+    .data(rightData)
+    .enter().append("circle")
+    .attr("class", "point-right")
+    .attr("cx", d => xScale(d["_time"]))
+    .attr("cy", d => yScaleRight(d["_value"]))
+    .attr("r", 2) 
+    .style("fill", "red");  
 
     svg.append("g")
       .attr("class", "axis-left")
@@ -225,12 +248,23 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-right")
       .attr("transform", `translate(${width}, 0)`)
       .call(d3.axisRight(yScaleRight));
+
     console.log(day_or_hour)
     if (day_or_hour === "1h") {
       svg.append("g")
         .attr("class", "axis-bottom")
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)))
+        .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-65)" );
+    } else if (day_or_hour === "3h") {
+      svg.append("g")
+        .attr("class", "axis-bottom")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(3)))
         .selectAll("text")  
           .style("text-anchor", "end")
           .attr("dx", "-.8em")
@@ -243,13 +277,144 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
+
+    
+    //tooltip rectangle
+    const tooltip = svg.append("rect")
+      .attr("x", width+80)
+      .attr("y", 65)
+      .attr("height", 70)
+      .attr("width", 200) 
+      .attr("font-weight", 700)
+      .style("opacity", 0)
+      .attr("stroke", "black")
+      .attr("fill", "#dc7764");
+
+    const tooltipTextTime = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueRight = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    svg.selectAll(".point-right")
+      .on("mouseover", function(event, d) {
+        console.log(leftData)
+        const foundObject = leftData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
+
+        tooltip.style("opacity", 0.8)
+            .attr("x", d3.pointer(event)[0] + 80)
+            .attr("y", d3.pointer(event)[1])
+            .attr("fill", "#dc7764");
+
+        tooltipTextTime.style("opacity", 1)
+            .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("y", d3.pointer(event)[1] + 15)
+
+        tooltipTextValueRight.style("opacity", 1)
+            .text(texto + ": " + d["_value"].toFixed(3))
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("y", d3.pointer(event)[1] + 35)
+        
+            
+        tooltipTextValueLeft.style("opacity", 1)
+            .text("Number of vehicles: " + foundObject["_value"].toLocaleString('hi-IN'))
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("y", d3.pointer(event)[1] + 55)
+      })
+      .on("mouseout", function(event, d) {
+        tooltip.attr("x", width+80)
+              .attr("y", 65)
+              .style("opacity", 0);
+        tooltipTextTime.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+        tooltipTextValueLeft.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+        tooltipTextValueRight.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+      });
+
+    svg.selectAll(".point-left")
+      .on("mouseover", function(event, d) {
+        console.log(leftData)
+        const foundObject = rightData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
+
+        tooltip.style("opacity", 0.8)
+            .attr("x", d3.pointer(event)[0] + 80)
+            .attr("y", d3.pointer(event)[1])
+            .attr("fill", "#377df0");
+
+        tooltipTextTime.style("opacity", 1)
+            .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("y", d3.pointer(event)[1] + 15)
+
+        tooltipTextValueRight.style("opacity", 1)
+            .text(texto + ": " + foundObject["_value"].toLocaleString('hi-IN'))
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("y", d3.pointer(event)[1] + 35)
+        
+            
+        tooltipTextValueLeft.style("opacity", 1)
+            .text("Number of vehicles: " + d["_value"].toFixed(3))
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("y", d3.pointer(event)[1] + 55)
+        
+      })
+      .on("mouseout", function(event, d) {
+        tooltip.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+
+        tooltipTextTime.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+
+        tooltipTextValueLeft.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+
+        tooltipTextValueRight.attr("x", width+80)
+          .attr("y", 65)
+          .style("opacity", 0);
+      });
   }
 
 
   //done and functional
   function createFirstGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
   
-    const margin = { top: 50, right: 100, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 100, bottom: 30, left: 80 };
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
 
@@ -276,9 +441,9 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     });
 
     const timeExtent = d3.extent(meteorologicalData, d => d["_time"]);
-    const timePadding = day_or_hour === "1h" ? 60*60*1000 : 24*60*60*1000; // Change time padding based on day_or_hour
-    const startTime = new Date(timeExtent[0].getTime() - timePadding);
-    const endTime = new Date(timeExtent[1].getTime() + timePadding);
+    const timePadding = day_or_hour === "1h" ? 1 * 60 * 60 * 500 : day_or_hour === "3h" ? 4 * 60 * 60 * 500 : 24*60*60*500;
+    const startTime = new Date(timeExtent[0].getTime() - timePadding - 50);
+    const endTime = new Date(timeExtent[1].getTime() + timePadding + 50);
 
     svg = d3.select(`#${containerId}`)
       .append("svg")
@@ -382,25 +547,45 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       texto = "Humidity (%)"
     }
 
+    // subtitles
+
+    // legenda in axis
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("transform", "rotate(-90)" )
+      .attr("text-anchor", "end")
+      .attr("x", -10)
+      .attr("y", -50)
+      .attr("dy", ".2em")
+      .text("Vehicle Speed (km/h)");
+    
+    svg.append("text")
+      .attr("class", "axis-right")
+      .attr("transform", "rotate(90)" )
+      .attr("x", 20)
+      .attr("y", -width-50)
+      .attr("dy", ".2em")
+      .text(texto);
+
     // boxplot legenda
     svg.append("line")
-      .attr("x1", width+55)
+      .attr("x1", width+85)
       .attr("y1", 105)
-      .attr("x2", width+55) 
+      .attr("x2", width+85) 
       .attr("y2", 95)
       .style("stroke", "black")
       .style("stroke-width", 1);
     
     svg.append("line")
-      .attr("x1", width+55)
+      .attr("x1", width+85)
       .attr("y1", 55)
-      .attr("x2", width+55) 
+      .attr("x2", width+85) 
       .attr("y2", 65)
       .style("stroke", "black")
       .style("stroke-width", 1);
 
     svg.append("rect")
-      .attr("x", width+50)
+      .attr("x", width+80)
       .attr("y", 65)
       .attr("height", 30)
       .attr("width", 10) 
@@ -408,51 +593,35 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("fill", "#69b3a2");
     
     svg.append("line")
-      .attr("x1", width+60)
+      .attr("x1", width+80)
       .attr("y1", 80)
-      .attr("x2", width+50) 
+      .attr("x2", width+90) 
       .attr("y2", 80)
       .style("stroke", "black")
       .style("stroke-width", 1);
 
     svg.append("text")
       .attr("class", "axis-left")
-      .attr("x", width+68)
+      .attr("x", width+95)
       .attr("y", 80)
       .attr("dy", ".25em")
       .attr("font-size", "11px")
       .text("Vehicle Speed");
 
-    //line legenda
     svg.append("line")
-      .attr("x1", width+50)
+      .attr("x1", width+80)
       .attr("y1", 120)
-      .attr("x2", width+60) 
+      .attr("x2", width+90) 
       .attr("y2", 120)
       .style("stroke", "red")
       .style("stroke-width", 1);
-
+    
     svg.append("text")
       .attr("class", "axis-left")
-      .attr("x", width+65)
+      .attr("x", width+95)
       .attr("y", 120)
       .attr("dy", ".25em")
       .attr("font-size", "11px")
-      .text(texto);
-    
-    // legenda in axis
-    svg.append("text")
-      .attr("class", "axis-left")  
-      .attr("x", -30)
-      .attr("y", -13)
-      .attr("dy", ".2em")
-      .text("Vehicle speed (km/h)");
-
-    svg.append("text")
-      .attr("class", "axis-right")
-      .attr("x", width)
-      .attr("y", -13)
-      .attr("dy", ".2em")
       .text(texto);
     
     // end subtitles
@@ -467,6 +636,16 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
           .attr("dx", "-.8em")
           .attr("dy", ".15em")
           .attr("transform", "rotate(-65)" );
+    } else if (day_or_hour === "3h") {
+      svg.append("g")
+        .attr("class", "axis-bottom")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(3)))
+        .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-65)" );
     }
     else {
       svg.append("g")
@@ -474,13 +653,13 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
-}
+  }
 
 
   //done and functional
   function createThirdGraph(containerId, meteorologicalData, avgSpeed, maxAvgSpeed, minAvgSpeed, maxSpeed, minSpeed) {
   
-    const margin = { top: 50, right: 100, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 100, bottom: 30, left: 80 };
     const width = 800 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
 
@@ -507,7 +686,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     });
 
     const timeExtent = d3.extent(meteorologicalData, d => d["_time"]);
-    const timePadding = day_or_hour === "1h" ? 60*60*1000 : 24*60*60*1000; // Change time padding based on day_or_hour
+    const timePadding = day_or_hour === "1h" ? 1 * 60 * 60 * 500 : day_or_hour === "3h" ? 4 * 60 * 60 * 500 : 24*60*60*500;
     const startTime = new Date(timeExtent[0].getTime() - timePadding);
     const endTime = new Date(timeExtent[1].getTime() + timePadding);
 
@@ -599,25 +778,45 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "axis-left")
       .call(d3.axisLeft(yScaleLeft));
     
+    // subtitles
+
+    // legenda in axis
+    svg.append("text")
+      .attr("class", "axis-left")
+      .attr("transform", "rotate(-90)" )
+      .attr("text-anchor", "end")
+      .attr("x", -10)
+      .attr("y", -50)
+      .attr("dy", ".2em")
+      .text("Vehicle Speed (km/h)");
+    
+    svg.append("text")
+      .attr("class", "axis-right")
+      .attr("transform", "rotate(90)" )
+      .attr("x", 20)
+      .attr("y", -width-60)
+      .attr("dy", ".2em")
+      .text("Number of vehicles");
+
     // boxplot legenda
     svg.append("line")
-      .attr("x1", width+55)
+      .attr("x1", width+95)
       .attr("y1", 105)
-      .attr("x2", width+55) 
+      .attr("x2", width+95) 
       .attr("y2", 95)
       .style("stroke", "black")
       .style("stroke-width", 1);
     
     svg.append("line")
-      .attr("x1", width+55)
+      .attr("x1", width+95)
       .attr("y1", 55)
-      .attr("x2", width+55) 
+      .attr("x2", width+95) 
       .attr("y2", 65)
       .style("stroke", "black")
       .style("stroke-width", 1);
 
     svg.append("rect")
-      .attr("x", width+50)
+      .attr("x", width+90)
       .attr("y", 65)
       .attr("height", 30)
       .attr("width", 10) 
@@ -625,60 +824,52 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("fill", "#69b3a2");
     
     svg.append("line")
-      .attr("x1", width+60)
+      .attr("x1", width+90)
       .attr("y1", 80)
-      .attr("x2", width+50) 
+      .attr("x2", width+100) 
       .attr("y2", 80)
       .style("stroke", "black")
       .style("stroke-width", 1);
 
     svg.append("text")
       .attr("class", "axis-left")
-      .attr("x", width+68)
+      .attr("x", width+105)
       .attr("y", 80)
       .attr("dy", ".25em")
       .attr("font-size", "11px")
       .text("Vehicle Speed");
 
-    //line legenda
     svg.append("line")
-      .attr("x1", width+50)
+      .attr("x1", width+90)
       .attr("y1", 120)
-      .attr("x2", width+60) 
+      .attr("x2", width+100) 
       .attr("y2", 120)
       .style("stroke", "red")
       .style("stroke-width", 1);
-
+    
     svg.append("text")
       .attr("class", "axis-left")
-      .attr("x", width+65)
+      .attr("x", width+105)
       .attr("y", 120)
       .attr("dy", ".25em")
       .attr("font-size", "11px")
       .text("Number of vehicles");
-    
-    // in axis legenda
-    svg.append("text")
-      .attr("class", "axis-left")  
-      .attr("x", -30)
-      .attr("y", -13)
-      .attr("dy", ".2em")
-      .text("Vehicle speed (km/h)");
-
-    svg.append("text")
-      .attr("class", "axis-right")  
-      .attr("x", width-50)
-      .attr("y", -13)
-      .attr("dy", ".2em")
-      .text("Number of vehicles");
-    
-    // end subtitles
 
     if (day_or_hour === "1h") {
       svg.append("g")
         .attr("class", "axis-bottom")
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)))
+        .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-65)" );
+    } else if (day_or_hour === "3h") {
+      svg.append("g")
+        .attr("class", "axis-bottom")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(3)))
         .selectAll("text")  
           .style("text-anchor", "end")
           .attr("dx", "-.8em")

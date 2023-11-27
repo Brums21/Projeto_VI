@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import MiddleGraphic from './components/MiddleGraphic.js';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import Card from 'react-bootstrap/Card';
+import map from './images/map2.png'
 import './App.css';
 import * as d3 from 'd3'; 
 
@@ -12,16 +19,16 @@ function App() {
     const svg = image
       .append('svg')
       .attr('width', '471px')
-      .attr('height', '695px')
+      .attr('height', '800px')
       .style('position', 'absolute')
       .style('top', 0)
       .style('left', 0)
       .style('z-index', 1);
   
     const buttonCoordinates = [
-      { x: 415, y: 182, station: "5" },
-      { x: 148, y: 160, station: "6" },
-      { x: 100, y: 656, station: "7" },
+      { x: 436, y: 260, station: "5" },
+      { x: 182, y: 238, station: "6" },
+      { x: 135, y: 710, station: "7" },
     ];
 
     let lastClickedButton = null;
@@ -76,14 +83,33 @@ function App() {
   
   return (
     <div className="App">
-      <div className="row">
-        <div className="left-section">
-          <div ref={mapRef} className='map'  alt="Mapa Estações" />
-        </div>
-        <div className="overlay">
-          <MiddleGraphic station={selectedStation}/>
-        </div>
-      </div>
+      <Navbar className = "navbar" bg="light" data-bs-theme="light">
+        <Container>
+          <Navbar.Brand href="">Visualization Information Project</Navbar.Brand>
+        </Container>
+      </Navbar>
+        <Row>
+          <Col xs={4} className="mx-auto d-flex justify-content-center">
+            <div className="mx-auto">
+              <Card style={{ width: '490px', marginLeft: '2%', marginTop: '1%', marginBottom: '1%'}} className="text-center">
+                <Card.Img style={{marginTop: '2%'}} variant="top" src={map} />
+                <Card.Body>
+                  <Card.Title>Card Title</Card.Title>
+                  <Card.Text>
+                    Some quick example text to build on the card title and make up the
+                    bulk of the card's content.
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </div>
+          </Col>
+          <Col xs={8} className="mx-auto d-flex justify-content-center">
+            <div ref={mapRef} className='map' alt="Mapa Estações" />
+            <div className="overlay">
+              <MiddleGraphic station={selectedStation}/>
+            </div>
+          </Col>
+        </Row>     
     </div>
   );
 }
