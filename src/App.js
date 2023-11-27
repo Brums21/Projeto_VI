@@ -18,17 +18,17 @@ function App() {
     const image = d3.select(mapRef.current);
     const svg = image
       .append('svg')
-      .attr('width', '471px')
-      .attr('height', '800px')
+      .attr('width', '490px')
+      .attr('height', '980px')
       .style('position', 'absolute')
       .style('top', 0)
       .style('left', 0)
       .style('z-index', 1);
   
     const buttonCoordinates = [
-      { x: 436, y: 260, station: "5" },
-      { x: 182, y: 238, station: "6" },
-      { x: 135, y: 710, station: "7" },
+      { x: 445, y: 445, station: "5" },
+      { x: 168, y: 418, station: "6" },
+      { x: 115, y: 935, station: "7" },
     ];
 
     let lastClickedButton = null;
@@ -58,22 +58,23 @@ function App() {
         lastClickedButton = d3.select(this);
       })
       .on('mouseover', function () {
-        d3.select(this).select('circle').attr('r', 35);
+        d3.select(this).select('circle').attr('r', 40);
       })
       .on('mouseout', function () {
-        d3.select(this).select('circle').attr('r', 30);
+        d3.select(this).select('circle').attr('r', 35);
       });
   
     buttons.append('circle')
-      .attr('r', 30)
+      .attr('r', 35)
       .style('fill', 'black');
   
     buttons.append('text')
       .text(function (d) {
         return d.station;
       })
+      .attr('font-size', '25px')
       .attr('text-anchor', 'middle')
-      .attr('dy', 5)
+      .attr('dy', 10)
       .style('fill', 'white')
       .style('pointer-events', 'none');
 
@@ -91,15 +92,15 @@ function App() {
         <Row>
           <Col xs={4} className="mx-auto d-flex justify-content-center">
             <div className="mx-auto">
-              <Card style={{ width: '490px', marginLeft: '2%', marginTop: '1%', marginBottom: '1%'}} className="text-center">
-                <Card.Img style={{marginTop: '2%'}} variant="top" src={map} />
+              <Card style={{ width: '490px', marginLeft: '2%', marginTop: '1%', marginBottom: '1%'}}>
                 <Card.Body>
-                  <Card.Title>Card Title</Card.Title>
+                  <Card.Title>Stations</Card.Title>
                   <Card.Text>
-                    Some quick example text to build on the card title and make up the
-                    bulk of the card's content.
+                    There are three main stations for the colletion of road traffic data, each in one different location, provided by the circles on top of the image.  <br/>
+                    Select a circle to view the visualization corresponding to that station.
                   </Card.Text>
                 </Card.Body>
+                <Card.Img style={{marginTop: '2%'}} variant="bottom" src={map} />
               </Card>
             </div>
           </Col>

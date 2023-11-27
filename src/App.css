@@ -7,12 +7,11 @@
 }
 
 .App .nav-link {
-  color: #30a825; /* Change to your desired text color */
+  color: #30a825; 
 }
 
-/* Optional: Hover styles for unselected tabs */
 .App .nav-link:hover {
-  color: rgb(15, 106, 70) /* Change to your desired hover text color */
+  color: rgb(15, 106, 70) 
 }
 
 .App .tooltip {
@@ -63,6 +62,20 @@ body{
   margin-bottom: 2%;
 }
 
+.accordion-button {
+  background-color: rgb(15, 106, 70) !important;
+  color: #ffffff !important;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #ffffff;
+}
+
+
 .middle-right-section {
   flex: 1;
   display: flex;
@@ -71,7 +84,7 @@ body{
 
 .graph-container {
   min-width: 900px; 
-  height: 280px;
+  height: 400px;
   background-color: #f0f0f0;
 }
 

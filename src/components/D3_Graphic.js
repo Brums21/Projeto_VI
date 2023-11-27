@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import queryInfluxDB from './influx.js'; // Replace with the actual path
+import { Accordion } from 'react-bootstrap';
 
 function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type}) {
   const [title, setTitle] = useState(null);
@@ -324,27 +325,36 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         const foundObject = leftData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
 
         tooltip.style("opacity", 0.8)
-            .attr("x", d3.pointer(event)[0] + 80)
+            .attr("x", d3.pointer(event)[0] + 10)
             .attr("y", d3.pointer(event)[1])
             .attr("fill", "#dc7764");
 
-        tooltipTextTime.style("opacity", 1)
+        if (day_or_hour === "1d"){
+          tooltipTextTime.style("opacity", 1)
             .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
             .attr("dy", "0em")
-            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("x", d3.pointer(event)[0] + 15)
+            .attr("y", d3.pointer(event)[1] + 15);
+        }
+        else {
+          tooltipTextTime.style("opacity", 1)
+            .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear() + " " + d["_time"].getHours().toLocaleString('en-US', {minimumIntegerDigits: 2}) + ":00:00")
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 15)
             .attr("y", d3.pointer(event)[1] + 15)
-
+        }
+      
         tooltipTextValueRight.style("opacity", 1)
             .text(texto + ": " + d["_value"].toFixed(3))
             .attr("dy", "0em")
-            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("x", d3.pointer(event)[0] + 15)
             .attr("y", d3.pointer(event)[1] + 35)
         
             
         tooltipTextValueLeft.style("opacity", 1)
             .text("Number of vehicles: " + foundObject["_value"].toLocaleString('hi-IN'))
             .attr("dy", "0em")
-            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("x", d3.pointer(event)[0] + 15)
             .attr("y", d3.pointer(event)[1] + 55)
       })
       .on("mouseout", function(event, d) {
@@ -368,27 +378,36 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         const foundObject = rightData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
 
         tooltip.style("opacity", 0.8)
-            .attr("x", d3.pointer(event)[0] + 80)
+            .attr("x", d3.pointer(event)[0] + 10)
             .attr("y", d3.pointer(event)[1])
             .attr("fill", "#377df0");
 
-        tooltipTextTime.style("opacity", 1)
+        if (day_or_hour === "1d"){
+          tooltipTextTime.style("opacity", 1)
             .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
             .attr("dy", "0em")
-            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("x", d3.pointer(event)[0] + 15)
+            .attr("y", d3.pointer(event)[1] + 15);
+        }
+        else {
+          tooltipTextTime.style("opacity", 1)
+            .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear() + " " + d["_time"].getHours().toLocaleString('en-US', {minimumIntegerDigits: 2}) + ":00:00")
+            .attr("dy", "0em")
+            .attr("x", d3.pointer(event)[0] + 15)
             .attr("y", d3.pointer(event)[1] + 15)
+        }
 
         tooltipTextValueRight.style("opacity", 1)
             .text(texto + ": " + foundObject["_value"].toFixed(3))
             .attr("dy", "0em")
-            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("x", d3.pointer(event)[0] + 15)
             .attr("y", d3.pointer(event)[1] + 35)
         
             
         tooltipTextValueLeft.style("opacity", 1)
             .text("Number of vehicles: " + d["_value"].toLocaleString('hi-IN'))
             .attr("dy", "0em")
-            .attr("x", d3.pointer(event)[0] + 85)
+            .attr("x", d3.pointer(event)[0] + 15)
             .attr("y", d3.pointer(event)[1] + 55)
         
       })
@@ -723,50 +742,59 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       console.log("here")
       console.log(d)
       const foundObject = meteorologicalData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
-      tooltip.style("opacity", 0.8)
-          .attr("x", d3.pointer(event)[0] + 80)
+      tooltip.style("opacity", 1)
+          .attr("x", d3.pointer(event)[0] + 10)
           .attr("y", d3.pointer(event)[1]);
 
-      tooltipTextTime.style("opacity", 1)
+      if (day_or_hour === "1d"){
+        tooltipTextTime.style("opacity", 1)
           .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 15);
+      }
+      else {
+        tooltipTextTime.style("opacity", 1)
+          .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear() + " " + d["_time"].getHours().toLocaleString('en-US', {minimumIntegerDigits: 2}) + ":00:00")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 15)
+          .attr("y", d3.pointer(event)[1] + 15)
+      }
 
       tooltipTextValueRight.style("opacity", 1)
           .text(texto + ": " + foundObject["_value"].toFixed(3))
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 35);
           
       tooltipTextValueLeft1.style("opacity", 1)
           .text("Average Speed: " + d["avgSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 55);
 
       tooltipTextValueLeft2.style("opacity", 1)
           .text("Minimum Average Speed: " + d["minAvgSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 75);
 
       tooltipTextValueLeft3.style("opacity", 1)
           .text("Maximum Average Speed: " + d["maxAvgSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 95);
 
       tooltipTextValueLeft4.style("opacity", 1)
           .text("Maximum Speed: " + d["maxSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 115);
 
       tooltipTextValueLeft5.style("opacity", 1)
           .text("Minimum Speed: " + d["minSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 135);
     })
     .on("mouseout", function(event, d) {
@@ -1105,50 +1133,59 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       console.log("here")
       console.log(d)
       const foundObject = meteorologicalData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
-      tooltip.style("opacity", 0.8)
-          .attr("x", d3.pointer(event)[0] + 80)
+      tooltip.style("opacity", 1)
+          .attr("x", d3.pointer(event)[0] + 10)
           .attr("y", d3.pointer(event)[1]);
 
-      tooltipTextTime.style("opacity", 1)
+      if (day_or_hour === "1d"){
+        tooltipTextTime.style("opacity", 1)
           .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 15);
+      }
+      else {
+        tooltipTextTime.style("opacity", 1)
+          .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear() + " " + d["_time"].getHours().toLocaleString('en-US', {minimumIntegerDigits: 2}) + ":00:00")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 15)
+          .attr("y", d3.pointer(event)[1] + 15)
+      }
 
       tooltipTextValueRight.style("opacity", 1)
           .text("Number of vehicles" + ": " + foundObject["_value"].toLocaleString('hi-IN'))
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 35);
           
       tooltipTextValueLeft1.style("opacity", 1)
           .text("Average Speed: " + d["avgSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 55);
 
       tooltipTextValueLeft2.style("opacity", 1)
           .text("Minimum Average Speed: " + d["minAvgSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 75);
 
       tooltipTextValueLeft3.style("opacity", 1)
           .text("Maximum Average Speed: " + d["maxAvgSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 95);
 
       tooltipTextValueLeft4.style("opacity", 1)
           .text("Maximum Speed: " + d["maxSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 115);
 
       tooltipTextValueLeft5.style("opacity", 1)
           .text("Minimum Speed: " + d["minSpeed"].toFixed(3) + " km/h")
           .attr("dy", "0em")
-          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("x", d3.pointer(event)[0] + 15)
           .attr("y", d3.pointer(event)[1] + 135);
     })
     .on("mouseout", function(event, d) {
@@ -1177,7 +1214,48 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("y", 65)
         .style("opacity", 0);
     });
-}
+  }
+
+  function getContentBasedOnTitle(title) {
+    switch (graph_type) {
+      case 'speed_meteorological':
+        return (
+          <p>
+            This graphic relates meteorologica data with vehicle velocity. The <font color="green">velocity parameters</font> are defined by the <font color="green">green boxplots</font>, and the <font color="red">meteorological data</font> is defined through the <font color="red">red line</font>.
+            <br/><br/>
+            These boxplots do not use the standart model where medians are used, and instead, use the maximum average, minimum average, standard average, standard maximum and standard minimum velocity values to fill the quartils, extremes and medians. 
+            <br/><br/>
+            Data is specific to the meteorological type, station and vehicle type selected, in the time period defined above.
+            <br/><br/>
+            When selecting a time range inferior to 4 days, the x-axis displayed will change from displaying data from each day, to displaying data three in three hours.
+          </p>
+        );
+      case 'inflow_meteorological':
+        return (
+          <p>
+            This graphic relates the vehiclee inflow data with meteorological data. Both the meteorological and inflow data are defined through the lines - <font color="red">red</font> for the <font color="red">metheorological data</font> and <font color="blue">blue</font> for the <font color="blue">inflow data</font>.
+            <br/><br/>
+            The inflow data contains the number of cars, near one station, which follow the same direction. Cars circulating in the oposite direction are categorized as <i>ouflow</i>.
+            <br/><br/>
+            Data is specific to the meteorological type, station and vehicle type selected, in the time period defined above.
+            <br/><br/>
+            When selecting a time range inferior to 4 days, the x-axis displayed will change from displaying data from each day, to displaying data three in three hours.
+          </p>
+        );
+      case 'speed_traffic':
+        return (
+        <p>
+          This graphic relates vehicle speed with inflow data. The <font color="green">velocity parameters</font> are defined by the <font color="green">green boxplots</font>, and the <font color="red">inflow data</font> is defined through the <font color="red">red line</font>.
+          <br/><br/>
+          These boxplots do not use the standart model where medians are used, and instead, use the maximum average, minimum average, standard average, standard maximum and standard minimum velocity values to fill the quartils, extremes and medians. 
+          <br/><br/>
+          Data is specific to station and vehicle type selected only, in the time period defined above.
+          <br/><br/>
+          When selecting a time range inferior to 4 days, the x-axis displayed will change from displaying data from each day, to displaying data three in three hours.
+        </p>
+        );
+    }
+  }
 
   
   useEffect(() => {
@@ -1187,7 +1265,19 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
 
   return (
     <div>
-      <h4 className='titulo'>{title}</h4>
+      <div>
+        <h4 className='titulo'>{title}</h4>
+      </div>
+      <div className="graph-container" id="middleGraph" style={{ marginLeft: '100px', justifyContent: "center"}}>  
+      </div>
+      <Accordion className="mx-auto" defaultActiveKey="0" style={{ width: '700px', justifyContent: "center"}}>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header className="custom-header">About this grafic</Accordion.Header>
+          <Accordion.Body>
+            {getContentBasedOnTitle(title)}
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
     </div>
   );
 }
