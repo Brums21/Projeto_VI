@@ -22,7 +22,6 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     else if ((end_date_- start_date_) / (1000 * 60 * 60 * 24) <= 4){
       day_or_hour = "3h"
     }
-    console.log((start_date_ -  end_date_ ) / (1000 * 60 * 60 * 24))
     try {
       //first graph
       if (graph_type === "speed_meteorological"){
@@ -222,7 +221,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("class", "point-left")
       .attr("cx", d => xScale(d["_time"]))
       .attr("cy", d => yScaleLeft(d["_value"]))
-      .attr("r", 2)  
+      .attr("r", 3)  
       .style("fill", "blue");
 
     svg.append("path")
@@ -239,7 +238,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("class", "point-right")
         .attr("cx", d => xScale(d["_time"]))
         .attr("cy", d => yScaleRight(d["_value"]))
-        .attr("r", 2) 
+        .attr("r", 3) 
         .style("fill", "red");  
 
     svg.append("g")
@@ -273,6 +272,17 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
           .attr("dy", ".15em")
           .attr("transform", "rotate(-65)" );
     }
+    else if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) > 17){
+      svg.append("g")
+        .attr("class", "axis-bottom")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)))
+        .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-65)" );
+    }
     else {
       svg.append("g")
         .attr("class", "axis-bottom")
@@ -285,6 +295,8 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     const tooltip = svg.append("rect")
       .attr("x", width+80)
       .attr("y", 65)
+      .attr("rx", 5)
+      .attr("ry", 5)
       .attr("height", 70)
       .attr("width", 200) 
       .attr("font-weight", 700)
@@ -477,7 +489,14 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     let minYValueleft = d3.min(boxplotData, d => d.minSpeed);
     let maxYValueleft = d3.max(boxplotData, d => d.maxSpeed);
 
-    const width_box = 20;
+    let width_box = 20;
+
+    if (day_or_hour === "1h"){
+      width_box = 10;
+    }
+    else if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) > 17){
+      width_box = 10;
+    }
 
     const xScale = d3.scaleTime()
       .domain([startTime, endTime])
@@ -635,7 +654,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     
     // end subtitles
 
-    if (day_or_hour === "1h") {
+    if ((day_or_hour === "1h")) {
       svg.append("g")
         .attr("class", "axis-bottom")
         .attr("transform", `translate(0, ${height})`)
@@ -655,6 +674,17 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
           .attr("dx", "-.8em")
           .attr("dy", ".15em")
           .attr("transform", "rotate(-65)" );
+    } else if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) > 17){
+      width_box = 10;
+      svg.append("g")
+        .attr("class", "axis-bottom")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)))
+        .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-65)" );
     }
     else {
       svg.append("g")
@@ -667,6 +697,8 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     const tooltip = svg.append("rect")
       .attr("x", width+80)
       .attr("y", 65)
+      .attr("rx", 5)
+      .attr("ry", 5)
       .attr("height", 145)
       .attr("width", 250) 
       .attr("font-weight", 700)
@@ -873,7 +905,14 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     let minYValueleft = d3.min(boxplotData, d => d.minSpeed);
     let maxYValueleft = d3.max(boxplotData, d => d.maxSpeed);
 
-    const width_box = 20;
+    let width_box = 20;
+
+    if (day_or_hour === "1h"){
+      width_box = 10;
+    }
+    else if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) > 17){
+      width_box = 10;
+    }
 
     const xScale = d3.scaleTime()
       .domain([startTime, endTime])
@@ -1046,6 +1085,17 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
           .attr("dx", "-.8em")
           .attr("dy", ".15em")
           .attr("transform", "rotate(-65)" );
+    } else if( (end_date_- start_date_) / (1000 * 60 * 60 * 24) > 17){
+      width_box = 10;
+      svg.append("g")
+        .attr("class", "axis-bottom")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)))
+        .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-65)" );
     }
     else {
       svg.append("g")
@@ -1060,6 +1110,8 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .attr("y", 65)
       .attr("height", 145)
       .attr("width", 250) 
+      .attr("rx", 5)
+      .attr("ry", 5)
       .attr("font-weight", 700)
       .style("opacity", 0)
       .attr("stroke", "black")

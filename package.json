@@ -1,6 +1,7 @@
 {
   "name": "projeto_vi",
   "version": "0.1.0",
+  "homepage": "http://Brums21.github.io/Projeto_VI",
   "private": true,
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
@@ -26,6 +27,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -47,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.0"
   }
 }
