@@ -2,7 +2,8 @@
 
 ## Run the project:
 
-``` npm run ```
+``` npm install ```
+``` npm start ```
 
 ### Attention:
 
