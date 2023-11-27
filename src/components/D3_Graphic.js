@@ -208,37 +208,38 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
     
     // end subtitles
 
-  svg.append("path")
-    .data([leftData])
-    .attr("class", "line blue")
-    .attr("d", lineLeft)
-    .attr("fill", "none")
-    .attr("stroke", "blue");
+    svg.append("path")
+      .data([leftData])
+      .attr("class", "line blue")
+      .attr("d", lineLeft)
+      .attr("fill", "none")
+      .attr("stroke", "blue");
 
-  svg.selectAll(".point-left")
-    .data(leftData)
-    .enter().append("circle")
-    .attr("class", "point-left")
-    .attr("cx", d => xScale(d["_time"]))
-    .attr("cy", d => yScaleLeft(d["_value"]))
-    .attr("r", 2)  
-    .style("fill", "blue");
+    svg.selectAll(".point-left")
+      .data(leftData)
+      .enter().append("circle")
+      .attr("class", "point-left")
+      .attr("cx", d => xScale(d["_time"]))
+      .attr("cy", d => yScaleLeft(d["_value"]))
+      .attr("r", 2)  
+      .style("fill", "blue");
 
-  svg.append("path")
-    .data([rightData])
-    .attr("class", "line red")
-    .attr("d", lineRight)
-    .attr("fill", "none")
-    .attr("stroke", "red");
+    svg.append("path")
+      .data([rightData])
+      .attr("class", "line red")
+      .attr("d", lineRight)
+      .attr("fill", "none")
+      .attr("stroke", "red");
 
-  svg.selectAll(".point-right")
-    .data(rightData)
-    .enter().append("circle")
-    .attr("class", "point-right")
-    .attr("cx", d => xScale(d["_time"]))
-    .attr("cy", d => yScaleRight(d["_value"]))
-    .attr("r", 2) 
-    .style("fill", "red");  
+    svg.selectAll(".point-right")
+      .data(rightData)
+      .enter()
+      .append("circle")
+        .attr("class", "point-right")
+        .attr("cx", d => xScale(d["_time"]))
+        .attr("cy", d => yScaleRight(d["_value"]))
+        .attr("r", 2) 
+        .style("fill", "red");  
 
     svg.append("g")
       .attr("class", "axis-left")
@@ -378,14 +379,14 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
             .attr("y", d3.pointer(event)[1] + 15)
 
         tooltipTextValueRight.style("opacity", 1)
-            .text(texto + ": " + foundObject["_value"].toLocaleString('hi-IN'))
+            .text(texto + ": " + foundObject["_value"].toFixed(3))
             .attr("dy", "0em")
             .attr("x", d3.pointer(event)[0] + 85)
             .attr("y", d3.pointer(event)[1] + 35)
         
             
         tooltipTextValueLeft.style("opacity", 1)
-            .text("Number of vehicles: " + d["_value"].toFixed(3))
+            .text("Number of vehicles: " + d["_value"].toLocaleString('hi-IN'))
             .attr("dy", "0em")
             .attr("x", d3.pointer(event)[0] + 85)
             .attr("y", d3.pointer(event)[1] + 55)
@@ -475,17 +476,6 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
       .x(d => xScale(d["_time"]))
       .y(d => yScaleRight(d["_value"]));
 
-    const lineLeft = d3.line()
-      .x(d => xScale(d["_time"]))
-      .y(d => yScaleLeft(d["_value"]));
-
-    svg.append("path")
-      .data([avgSpeed])
-      .attr("class", "line blue")
-      .attr("d", lineLeft)
-      .attr("fill", "none")
-      .attr("stroke", "blue");
-
     svg.selectAll("verticalLines")
       .data(boxplotData)
       .enter()
@@ -496,7 +486,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("y2", d => yScaleLeft(d.maxSpeed))
         .attr("stroke", "black");
 
-    svg.selectAll("boxes")
+    let boxes = svg.selectAll("boxes")
       .data(boxplotData)
       .enter()
       .append("rect")
@@ -653,6 +643,159 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
+
+    //tooltip rectangle
+    const tooltip = svg.append("rect")
+      .attr("x", width+80)
+      .attr("y", 65)
+      .attr("height", 145)
+      .attr("width", 250) 
+      .attr("font-weight", 700)
+      .style("opacity", 0)
+      .attr("stroke", "black")
+      .attr("fill", "#65a4df");
+
+    const tooltipTextTime = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueRight = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft1 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft2 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft3 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft4 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft5 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    //on hover boxes:
+    boxes.on("mouseover", function(event, d) {
+      console.log("here")
+      console.log(d)
+      const foundObject = meteorologicalData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
+      tooltip.style("opacity", 0.8)
+          .attr("x", d3.pointer(event)[0] + 80)
+          .attr("y", d3.pointer(event)[1]);
+
+      tooltipTextTime.style("opacity", 1)
+          .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 15);
+
+      tooltipTextValueRight.style("opacity", 1)
+          .text(texto + ": " + foundObject["_value"].toFixed(3))
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 35);
+          
+      tooltipTextValueLeft1.style("opacity", 1)
+          .text("Average Speed: " + d["avgSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 55);
+
+      tooltipTextValueLeft2.style("opacity", 1)
+          .text("Minimum Average Speed: " + d["minAvgSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 75);
+
+      tooltipTextValueLeft3.style("opacity", 1)
+          .text("Maximum Average Speed: " + d["maxAvgSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 95);
+
+      tooltipTextValueLeft4.style("opacity", 1)
+          .text("Maximum Speed: " + d["maxSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 115);
+
+      tooltipTextValueLeft5.style("opacity", 1)
+          .text("Minimum Speed: " + d["minSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 135);
+    })
+    .on("mouseout", function(event, d) {
+      tooltip.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueRight.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextTime.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft1.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft2.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft3.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft4.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft5.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+    });
+    
   }
 
 
@@ -741,7 +884,7 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("y2", d => yScaleLeft(d.maxSpeed))
         .attr("stroke", "black");
 
-    svg.selectAll("boxes")
+    let boxes = svg.selectAll("boxes")
       .data(boxplotData)
       .enter()
       .append("rect")
@@ -882,6 +1025,158 @@ function D3_Graphic({ data, station, meteorology, vehicle_type, date, graph_type
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeDay.every(1)));
     }
+
+    //tooltip rectangle
+    const tooltip = svg.append("rect")
+      .attr("x", width+80)
+      .attr("y", 65)
+      .attr("height", 145)
+      .attr("width", 250) 
+      .attr("font-weight", 700)
+      .style("opacity", 0)
+      .attr("stroke", "black")
+      .attr("fill", "#65a4df");
+
+    const tooltipTextTime = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueRight = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft1 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft2 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft3 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft4 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    const tooltipTextValueLeft5 = svg.append("text")
+      .text("sometext")
+      .attr("x", width + 85)
+      .attr("y", 80)
+      .attr("dy", ".25em")
+      .attr("font-weight", 500)
+      .attr("font-size", "13px")
+      .style("opacity", 0);
+
+    //on hover boxes:
+    boxes.on("mouseover", function(event, d) {
+      console.log("here")
+      console.log(d)
+      const foundObject = meteorologicalData.find(obj => obj["_time"].getTime() === d["_time"].getTime());
+      tooltip.style("opacity", 0.8)
+          .attr("x", d3.pointer(event)[0] + 80)
+          .attr("y", d3.pointer(event)[1]);
+
+      tooltipTextTime.style("opacity", 1)
+          .text("Time: " + d["_time"].getDate() + "/" + d["_time"].getMonth() + "/" + d["_time"].getFullYear())
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 15);
+
+      tooltipTextValueRight.style("opacity", 1)
+          .text("Number of vehicles" + ": " + foundObject["_value"].toLocaleString('hi-IN'))
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 35);
+          
+      tooltipTextValueLeft1.style("opacity", 1)
+          .text("Average Speed: " + d["avgSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 55);
+
+      tooltipTextValueLeft2.style("opacity", 1)
+          .text("Minimum Average Speed: " + d["minAvgSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 75);
+
+      tooltipTextValueLeft3.style("opacity", 1)
+          .text("Maximum Average Speed: " + d["maxAvgSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 95);
+
+      tooltipTextValueLeft4.style("opacity", 1)
+          .text("Maximum Speed: " + d["maxSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 115);
+
+      tooltipTextValueLeft5.style("opacity", 1)
+          .text("Minimum Speed: " + d["minSpeed"].toFixed(3) + " km/h")
+          .attr("dy", "0em")
+          .attr("x", d3.pointer(event)[0] + 85)
+          .attr("y", d3.pointer(event)[1] + 135);
+    })
+    .on("mouseout", function(event, d) {
+      tooltip.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueRight.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextTime.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft1.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft2.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft3.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft4.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+      tooltipTextValueLeft5.attr("x", width+80)
+        .attr("y", 65)
+        .style("opacity", 0);
+    });
 }
 
   
