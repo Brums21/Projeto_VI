@@ -3,10 +3,11 @@ import MiddleGraphic from './components/MiddleGraphic.js';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Card from 'react-bootstrap/Card';
 import map from './images/map2.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import './App.css';
 import * as d3 from 'd3'; 
 
@@ -26,9 +27,9 @@ function App() {
       .style('z-index', 1);
   
     const buttonCoordinates = [
-      { x: 445, y: 445, station: "5" },
-      { x: 168, y: 418, station: "6" },
-      { x: 115, y: 935, station: "7" },
+      { x: 445, y: 450, station: "5" },
+      { x: 168, y: 429, station: "6" },
+      { x: 115, y: 943, station: "7" },
     ];
 
     let lastClickedButton = null;
@@ -84,33 +85,63 @@ function App() {
   
   return (
     <div className="App">
-      <Navbar className = "navbar" bg="light" data-bs-theme="light">
+      <Navbar className="navbar" bg="light" expand="lg" data-bs-theme="light">
         <Container>
           <Navbar.Brand href="">Visualization Information Project</Navbar.Brand>
+          <Navbar.Collapse className="justify-content-end">
+            <Navbar.Text>
+              <div style={{ display: 'flex', alignItems: 'center'}}>
+                <div style={{ marginRight: '10px' }}>Github Repository</div>
+                <a href="https://github.com/Brums21/Projeto_VI" target="_blank" rel="noopener noreferrer">
+                  <FontAwesomeIcon style={{ color: 'black' }} icon={faGithub} size="2x" />
+                </a>
+              </div>
+            </Navbar.Text>
+        </Navbar.Collapse>
         </Container>
       </Navbar>
-        <Row>
-          <Col xs={4} className="mx-auto d-flex justify-content-center">
-            <div className="mx-auto">
-              <Card style={{ width: '490px', marginLeft: '2%', marginTop: '1%', marginBottom: '1%'}}>
-                <Card.Body>
-                  <Card.Title>Stations</Card.Title>
-                  <Card.Text>
-                    There are three main stations for the colletion of road traffic data, each in one different location, provided by the circles on top of the image.  <br/>
-                    Select a circle to view the visualization corresponding to that station.
-                  </Card.Text>
-                </Card.Body>
-                <Card.Img style={{marginTop: '2%'}} variant="bottom" src={map} />
-              </Card>
-            </div>
-          </Col>
-          <Col xs={8} className="mx-auto d-flex justify-content-center">
-            <div ref={mapRef} className='map' alt="Mapa Estações" />
-            <div className="overlay">
-              <MiddleGraphic station={selectedStation}/>
-            </div>
-          </Col>
-        </Row>     
+      <Row>
+        <Col xs={4} className="mx-auto d-flex justify-content-center">
+          <div className="mx-auto">
+            <Card style={{ width: '490px', marginLeft: '2%', marginTop: '1%', marginBottom: '1%'}}>
+              <Card.Body>
+                <Card.Title>Stations</Card.Title>
+                <Card.Text>
+                  There are three main stations for the colletion of road traffic data, each in one different location, provided by the circles on top of the image.  <br/>
+                  Select a circle to view the visualization corresponding to that station.
+                </Card.Text>
+              </Card.Body>
+              <Card.Img style={{marginTop: '2%'}} variant="bottom" src={map} />
+            </Card>
+          </div>
+        </Col>
+        <Col xs={8} className="mx-auto d-flex justify-content-center">
+          <div ref={mapRef} className='map' alt="Mapa Estações" />
+          <div className="overlay">
+            <MiddleGraphic station={selectedStation}/>
+          </div>
+        </Col>
+      </Row>     
+      <footer className="bg-light mt-5" style={{ height: "70px" }}>
+        <Container>
+          <Row className="justify-content-between align-items-left">
+            <Col className="text-left" style={{marginTop: "25px"}}>
+              <p className="text-muted">Bruna Simões <b>103453</b> </p>
+            </Col>
+            <Col className="text-left" style={{marginTop: "25px"}}>
+              <p className="text-muted">João Teles <b>104360</b> </p>
+            </Col>
+            <Col className="text-right">
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: "20px"}}>
+                <div style={{ marginRight: '10px' }}>Github Repository</div>
+                <a href="https://github.com/Brums21/Projeto_VI" target="_blank" rel="noopener noreferrer">
+                  <FontAwesomeIcon style={{ color: 'black' }} icon={faGithub} size="2x" />
+                </a>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+    </footer>
     </div>
   );
 }
